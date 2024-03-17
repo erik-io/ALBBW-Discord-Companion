@@ -120,7 +120,7 @@ def check_mail():
                 # If the part is a PDF file
                 if filename and filename.endswith('.pdf'):
                     # Save the PDF file
-                    filepath = os.path.join('C:/Users/Mainsys/PycharmProjects/EmailFetch', filename)
+                    filepath = filename
                     with open(filepath, 'wb') as f:
                         f.write(part.get_payload(decode=True))
                     print(f"PDF gespeichert: {filepath}")
