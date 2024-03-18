@@ -1,3 +1,9 @@
+"""
+pip install python-dotenv
+pip install discord.py
+pip install PyMuPDF
+"""
+
 import os
 from dotenv import load_dotenv
 import discord
@@ -10,36 +16,38 @@ import fitz
 # File to keep track of processed emails
 processed_mails = "processed_mails.txt"
 
-# Lädt die Umgebungsvariablen aus der .env-Datei, damit sie im weiteren Code verwendet werden können.
+# Load environment variables from .env file
 load_dotenv()
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
-PASSWORD = os.getenv('PASSWORD')
 
-# Intents sind eine Funktionalität von Discord, die es ermöglicht, anzugeben, welche Art von Ereignissen der Bot
-# erhalten kann. Nach neueren Änderungen in der Discord-API sind diese explizit erforderlich.
+# Intents are a functionality of Discord that allows specifying what type of events the bot can receive.
+# After recent changes in the Discord API, these are explicitly required
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 intents.guilds = True
 
-# Wir erstellen eine Instant 'Client', die unsere Verbindung zui Discord repräsentiert
+# Create an instance 'Client' that represents our connection to Discord
 client = discord.Client(intents=intents)
 
-# 'on_ready' ist ein Even-Listener, der aufgerufen wird, wenn der Bot erfolgreich mit Discord verbunden ist.
-# Es signalisiert, dass der Bot bereit ist, die Befehle zu empfangen und zu verarbeiten.
+
 @client.event
 async def on_ready():
+    """
+    Event listener that is called when the bot successfully connects to Discord.
+    It signals that the bot is ready to receive and process commands.
+    """
     print(f"Wir sind eingeloggt als {client.user}")
 
-    # Erstellt einen Zähler, um zu verfolgen, mit wie vielen Gilden/Servern der Bot verbunden ist.
+    # Create a counter to track how many guilds/servers the bot is connected to.
     server_count = 0
 
-    # Durchläuft alle Server, mit denen der Bot verbunden ist
+    # Loop through all servers the bot is connected to
     for guild in client.guilds:
-        # Ausgabe der ID und Namen des Servers
+        # Output the ID and name of the server
         print(f"{guild.name} (Name: {guild.id})")
 
-        # Erhöht den Zähler
+        # Increase the counter
         server_count += 1
 
     if server_count > 1:
@@ -47,24 +55,26 @@ async def on_ready():
     else:
         print("Der SpeiseplanBot läuft auf " + str(server_count) + " Server.")
 
-    # Sendet eine Willkommensnachricht an einen bestimmten Kanal
+    # Send a welcome message to a specific channel
     channel = client.get_channel(1200385984337027124)
     if channel:
         await channel.send("Hallo, ich bin online!")
 
 
-# Die Event-Funktion 'on_message' reagiert auf jede Nachricht, die im Discord-Server empfangen wird, auf den der Bot
-# Zugriff hat. Zunächst wird jede Nachricht zusammen mit Details über den Autor und den Kanal in der Konsole
-# protokolliert. Wenn die Nachricht genau "test" entspricht, antwortet der Bot im selben Kanal.
 @client.event
 async def on_message(message):
+    """
+    The event function 'on_message' responds to every message received on the Discord server the bot has access to.
+    Initially, every message along with details about the author and the channel is logged in the console.
+    If the message exactly matches "essen", the bot responds in the same channel.
+    """
     print(f"Log: [{message.channel}] {message.author}: {message.content}")
 
     if message.content == "essen":
         # Pfad zur .png-Datei, die Sie senden möchten
         file_path = "vorschau.png"
         if os.path.exists(file_path):
-            # Erstellen Sie ein discord.File-Objekt mit dem Pfad zur Datei
+            # Erstellen Sie ein discord. File-Objekt mit dem Pfad zur Datei
             file = discord.File(file_path)
             # Senden Sie die Datei im selben Kanal
             await message.channel.send("Hier ist die Vorschau:", file=file)
@@ -79,8 +89,9 @@ def check_mail():
     It also marks the email as processed to avoid processing it again in the future.
     """
     # Email account details
-    EMAIL = 'weiterleitung@mainsys.tech'
-    SERVER = 'imap.hostinger.com'
+    EMAIL = os.getenv('EMAIL')
+    SERVER = os.getenv('SERVER')
+    PASSWORD = os.getenv('PASSWORD')
 
     # Connect to the email server
     mail = imaplib.IMAP4_SSL(SERVER)
@@ -171,4 +182,3 @@ if __name__ == "__main__":
     check_mail()
     # Run the bot
     client.run(DISCORD_TOKEN)
-
