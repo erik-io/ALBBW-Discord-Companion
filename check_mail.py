@@ -66,7 +66,7 @@ def check_mail():
                     doc = fitz.open(filepath)
                     page = doc.load_page(0)
                     pix = page.get_pixmap()
-                    output = "vorschau.png"
+                    output = f"vorschau_{current_kw}.png"
                     pix.save(output)
                     print(f"PDF-Vorschau gespeichert als {output}")
                     doc.close()
