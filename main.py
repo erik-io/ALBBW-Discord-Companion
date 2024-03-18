@@ -3,7 +3,7 @@ pip install python-dotenv
 pip install discord.py
 pip install PyMuPDF
 """
-
+import datetime
 import os
 from dotenv import load_dotenv
 import discord
@@ -13,6 +13,9 @@ from check_mail import check_mail
 # Load environment variables from .env file
 load_dotenv()
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
+
+# Get the current week number
+current_kw = datetime.date.today().isocalendar()[1]
 
 # Intents are a functionality of Discord that allows specifying what type of events the bot can receive.
 # After recent changes in the Discord API, these are explicitly required
@@ -64,9 +67,11 @@ async def on_message(message):
     """
     print(f"Log: [{message.channel}] {message.author}: {message.content}")
 
-    if message.content == "essen":
+    message_to_lower = message.content.lower()
+
+    if message_to_lower == "essen":
         # Pfad zur .png-Datei, die Sie senden möchten
-        file_path = "vorschau.png"
+        file_path = f"vorschau_{current_kw}.png"
         if os.path.exists(file_path):
             # Erstellen Sie ein discord. File-Objekt mit dem Pfad zur Datei
             file = discord.File(file_path)
