@@ -8,6 +8,7 @@ import os
 from dotenv import load_dotenv
 import discord
 
+from Vegans import vegan_food
 from check_mail import check_mail
 
 # Load environment variables from .env file
@@ -54,6 +55,7 @@ async def on_ready():
 
     # Send a welcome message to a specific channel
     channel = client.get_channel(1200385984337027124)
+    admin_role = discord.utils.get(channel.guild.roles, name="Admin")
     if channel:
         await channel.send("Hallo, ich bin online!")
 
@@ -75,11 +77,20 @@ async def on_message(message):
         if os.path.exists(file_path):
             # Erstellen Sie ein discord. File-Objekt mit dem Pfad zur Datei
             file = discord.File(file_path)
-            # Senden Sie die Datei im selben Kanal
             await message.channel.send("Hier ist die Vorschau:", file=file)
         else:
             await message.channel.send("Es scheint, als gäbe es keine Vorschau zum Senden.")
 
+
+async def ping_role(role_name, message):
+    """
+    This function sends a message to a specific channel and pings a specific role.
+    """
+    channel = client.get_channel(1200385984337027124)
+    role = discord.utils.get(channel.guild.roles, name=role_name)
+    if channel:
+        # Send a message and ping the role
+        await channel.send(f"<@&{role.id}> {message}")
 
 if __name__ == "__main__":
     # Check for new emails
