@@ -8,6 +8,7 @@ import fitz
 # File to keep track of processed emails
 processed_mails = "processed_mails.txt"
 
+
 def check_mail():
     """
     This function checks the email account for new emails with a specific subject line.
@@ -62,8 +63,10 @@ def check_mail():
                         f.write(part.get_payload(decode=True))
                     print(f"PDF gespeichert: {filepath}")
 
+                    new_name = rename_file(filepath)
+
                     # Generate a preview image of the first page of the PDF
-                    doc = fitz.open(filepath)
+                    doc = fitz.open(new_name)
                     page = doc.load_page(0)
                     pix = page.get_pixmap()
                     output = f"vorschau_{current_kw}.png"
@@ -71,7 +74,7 @@ def check_mail():
                     print(f"PDF-Vorschau gespeichert als {output}")
                     doc.close()
                     # Delete the PDF file
-                    os.remove(filepath)
+                    #os.remove(filepath)
                     # Mark the email as processed
                     mark_mail_as_processed(subject)
     finally:
@@ -79,6 +82,7 @@ def check_mail():
         # Close the connection to the email server
         mail.close()
         mail.logout()
+
 
 def mail_already_processed(subject):
     """
@@ -94,6 +98,7 @@ def mail_already_processed(subject):
     # Check if the email is in the list of processed emails
     return subject in mail_processed
 
+
 def mark_mail_as_processed(subject):
     """
     This function marks an email with the given subject line as processed.
@@ -102,3 +107,10 @@ def mark_mail_as_processed(subject):
     # Open the file and append the subject line
     with open(processed_mails, "a") as file:
         file.write(subject + "\n")
+
+def rename_file(file_path):
+    # Get the current week number
+    current_kw = datetime.date.today().isocalendar()[1]
+    # Rename the file
+    os.rename(file_path, f"Speiseplan_{current_kw}.pdf")
+    return f"Speiseplan_{current_kw}.pdf"
