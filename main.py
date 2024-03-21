@@ -1,30 +1,63 @@
-"""
-pip install python-dotenv
-pip install discord.py
-pip install PyMuPDF
-"""
-import datetime
 import os
+import datetime
+import logging
+import configparser
+from logging.handlers import RotatingFileHandler
 from dotenv import load_dotenv
 import discord
-import logging
 
+# Import custom modules
 # from Vegans import vegan_food
 from check_mail import check_mail
 
-# Set the logging level to INFO
-logging.basicConfig(filename='bot.log', level=logging.INFO, format = '%(asctime)s - %(levelname)s - %(message)s')
+# Initialize logging
+def setup_logging():
+    """
+    This function sets up the logging for the application. It reads the logging level from a configuration file,
+    sets up a rotating file handler for the log file and a console handler for console output. Both handlers use
+    the same formatter for their log messages. The function also sets the logging level for the root logger.
+    """
 
-# Create a console handler with level INFO
-console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.INFO)
+    # Create a config parser
+    config = configparser.ConfigParser()
 
-# Create a formatter and add it to the handler
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-console_handler.setFormatter(formatter)
+    # Read the configuration file
+    config.read('config.ini')
 
-# Add the handler to the root logger
-logging.getLogger('').addHandler(console_handler)
+    # Get the logging level from the configuration file, defaulting to 'INFO' if not found
+    log_level = config.get('LOGGING', 'log_level', fallback='INFO')
+
+    # Create a formatter for the log messages
+    log_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+    # Create a rotating file handler for the log file
+    # The log file will be 'bot.log', with a maximum size of 5MB, and a maximum of 1 backup files
+    log_file_handler = RotatingFileHandler('bot.log', maxBytes=5*1024*1024, backupCount=1)
+
+    # Set the formatter for the file handler
+    log_file_handler.setFormatter(log_formatter)
+
+    # Set the logging level for the file handler
+    log_file_handler.setLevel(getattr(logging, log_level.upper(), logging.INFO))
+
+    # Create a console handler for console output
+    console_handler = logging.StreamHandler()
+
+    # Set the logging level for the console handler
+    console_handler.setLevel(getattr(logging, log_level.upper(), logging.INFO))
+
+    # Set the formatter for the console handler
+    console_handler.setFormatter(log_formatter)
+
+    # Set the logging configuration for the root logger
+    # The root logger will have two handlers: the file handler and the console handler
+    logging.basicConfig(handlers=[log_file_handler, console_handler], level=logging.DEBUG)
+
+    # Log a message indicating that logging has been set up successfully
+    logging.info("Logging set up successfully")
+
+# Call the setup_logging function to set up logging
+setup_logging()
 
 # Load environment variables from .env file
 try:
@@ -41,21 +74,25 @@ except ValueError as e:
     logging.error(e) # Log the error message
     exit(1) # Exit the program with a status code of 1
 
-logging.info("Environment variables loaded successfully")
+logging.debug("Environment variables loaded successfully")
 
 # Get the current week number
+logging.debug("Getting current date and week number")
 current_kw = datetime.date.today().isocalendar()[1]
+logging.debug(f"Current week number: {current_kw}")
 
 # Intents are a functionality of Discord that allows specifying what type of events the bot can receive.
 # After recent changes in the Discord API, these are explicitly required
+logging.debug("Setting up intents")
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 intents.guilds = True
+logging.debug("Intents set up successfully")
 
 # Create an instance 'Client' that represents our connection to Discord
 client = discord.Client(intents=intents)
-
+logging.debug("Client instance created")
 
 @client.event
 async def on_ready():
@@ -63,7 +100,8 @@ async def on_ready():
     Event listener that is called when the bot successfully connects to Discord.
     It signals that the bot is ready to receive and process commands.
     """
-    print(f"Wir sind eingeloggt als {client.user}")
+    logging.info("Logged in as {0.user}".format(client))
+    logging.info(f"Bot is ready to receive and process commands")
 
     # Create a counter to track how many guilds/servers the bot is connected to.
     server_count = 0
@@ -71,22 +109,17 @@ async def on_ready():
     # Loop through all servers the bot is connected to
     for guild in client.guilds:
         # Output the ID and name of the server
-        print(f"{guild.name} (Name: {guild.id})")
+        logging.info(f"{guild.name} (Name: {guild.id})")
 
         # Increase the counter
         server_count += 1
 
-    if server_count > 1:
-        print("Der SpeiseplanBot läuft auf " + str(server_count) + " Servern.")
-    else:
-        print("Der SpeiseplanBot läuft auf " + str(server_count) + " Server.")
+    logging.info(f"Bot is running on {server_count} {'server' if server_count == 1 else 'servers'}.")
 
     # Send a welcome message to a specific channel
     channel = client.get_channel(1200385984337027124)
-    admin_role = discord.utils.get(channel.guild.roles, name="Admin")
     if channel:
         await channel.send("Hallo, ich bin online!")
-
 
 @client.event
 async def on_message(message):
@@ -95,7 +128,8 @@ async def on_message(message):
     Initially, every message along with details about the author and the channel is logged in the console.
     If the message exactly matches "essen", the bot responds in the same channel.
     """
-    print(f"Log: [{message.channel}] {message.author}: {message.content}")
+    # Log the message in the console
+    logging.debug(f"[{message.channel}] {message.author}: {message.content}")
 
     message_to_lower = message.content.lower()
 
@@ -129,4 +163,5 @@ if __name__ == "__main__":
         exit(1)  # Exit the program with a status code of 1
 
     # Check for new emails
+    logging.info("Checking for new emails")
     check_mail()
