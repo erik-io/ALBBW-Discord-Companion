@@ -7,13 +7,41 @@ import datetime
 import os
 from dotenv import load_dotenv
 import discord
+import logging
 
-from Vegans import vegan_food
+# from Vegans import vegan_food
 from check_mail import check_mail
 
+# Set the logging level to INFO
+logging.basicConfig(filename='bot.log', level=logging.INFO, format = '%(asctime)s - %(levelname)s - %(message)s')
+
+# Create a console handler with level INFO
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+
+# Create a formatter and add it to the handler
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+console_handler.setFormatter(formatter)
+
+# Add the handler to the root logger
+logging.getLogger('').addHandler(console_handler)
+
 # Load environment variables from .env file
-load_dotenv()
-DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
+try:
+    logging.info("Loading environment variables from .env file")
+    load_dotenv()
+    DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
+
+    # Check if the Discord token is set
+    if DISCORD_TOKEN is None:
+        raise ValueError("DISCORD_TOKEN is not set")
+    else:
+        logging.info("DISCORD_TOKEN is set")
+except ValueError as e:
+    logging.error(e) # Log the error message
+    exit(1) # Exit the program with a status code of 1
+
+logging.info("Environment variables loaded successfully")
 
 # Get the current week number
 current_kw = datetime.date.today().isocalendar()[1]
@@ -93,7 +121,12 @@ async def ping_role(role_name, message):
         await channel.send(f"<@&{role.id}> {message}")
 
 if __name__ == "__main__":
+    # Run the bot
+    try:
+        client.run(DISCORD_TOKEN)
+    except discord.LoginFailure:
+        logging.error("Invalid or expired DISCORD_TOKEN")
+        exit(1)  # Exit the program with a status code of 1
+
     # Check for new emails
     check_mail()
-    # Run the bot
-    client.run(DISCORD_TOKEN)
