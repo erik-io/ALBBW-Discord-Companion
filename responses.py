@@ -1,12 +1,15 @@
+# noinspection SpellCheckingInspection
 def oeffnungszeiten_info():
-        return (f'# Cafeteria\n'
-                f'__**Öffnungszeiten:**__\n'
-                f'```Montag - Freitag        08:30 Uhr - 15:00 Uhr\n'
-                f'Sonderöffnungszeiten    08:30 Uhr - 10.30 Uhr\n'
-                f'Mobile Cafeteria        08:30 Uhr - 11:00 Uhr```\n')
+    return (f'# Cafeteria\n'
+            f'__**Öffnungszeiten:**__\n'
+            f'```Montag - Freitag        08:30 Uhr - 15:00 Uhr\n'
+            f'Sonderöffnungszeiten    08:30 Uhr - 10.30 Uhr\n'
+            f'Mobile Cafeteria        08:30 Uhr - 11:00 Uhr```\n')
 
+
+# noinspection SpellCheckingInspection
 def kaffee_info():
-        return (f'__**Kaffeespezialitäten:**__\n'
+    return (f'__**Kaffeespezialitäten:**__\n'
             f'```Milchkaffee                      1,70 €\n'
             f'Heiße Schokolade                 1,70 €\n'
             f'Cappuccino                       1,50 €\n'
@@ -16,12 +19,11 @@ def kaffee_info():
             f'Doppelter Espresso               1,70 €\n'
             f'Espresso Macchiato               1,30 €\n'
             f'Café Créme                       1,45 €```\n')
-def cafeteria_info():
-    return (oeffnungszeiten_info() +
-            f'\n' +
-            kaffee_info() +
-            f'\n'
-            f'__**Getränke:**__\n'
+
+
+# noinspection SpellCheckingInspection
+def getraenke_info():
+    return (f'__**Getränke:**__\n'
             f'```Eistee Orange, 0,5l              1,20 €\n'
             f'Eistee Himbeere, 0,5l            1,20 €\n'
             f'Eistee Apfel, 0,5l               1,20 €\n'
@@ -36,9 +38,12 @@ def cafeteria_info():
             f'Sprite, 0,33l                    1,40 €\n'
             f'Fanta, 0,5l                      1,70 €\n'
             f'Kaffee klein, 0,2 l              1,20 €\n'
-            f'Kaffee groß, 0,3 l               1,65 €```\n'
-            f'\n'
-            f'__**Süßwaren und Snacks:**__\n'
+            f'Kaffee groß, 0,3 l               1,65 €```\n')
+
+
+# noinspection SpellCheckingInspection
+def snacks_info():
+    return (f'__**Süßwaren und Snacks:**__\n'
             f'```Cookie, 100 g hell und dunkel    1,80 €\n'
             f'Snickers, 50 g                   0,90 €\n'
             f'Twix, 50 g                       0,90 €\n'
@@ -52,3 +57,10 @@ def cafeteria_info():
             f'Brötchen, Sandwich               1,90 €\n'
             f'Salat, groß                      3,20 €\n'
             f'Salat, klein                     1,70 €\n```')
+
+
+def cafeteria_info():
+    return (oeffnungszeiten_info() +
+            kaffee_info() +
+            getraenke_info() +
+            snacks_info())
