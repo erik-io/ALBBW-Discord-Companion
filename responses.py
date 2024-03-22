@@ -80,7 +80,4 @@ def cafeteria_info():
     This function returns a formatted string containing the complete cafeteria information. It concatenates the
     strings returned by the oeffnungszeiten_info, kaffee_info, getraenke_info, and snacks_info functions.
     """
-    return (oeffnungszeiten_info() +
-            kaffee_info() +
-            getraenke_info() +
-            snacks_info())
+    return oeffnungszeiten_info() + kaffee_info() + getraenke_info() + snacks_info()
