@@ -148,11 +148,6 @@ async def on_ready():
 
     logging.info(f"Bot is running on {server_count} {'server' if server_count == 1 else 'servers'}.")
 
-    # Send a welcome message to a specific channel
-    channel = client.get_channel(1200385984337027124)
-    if channel:
-        await channel.send("Hallo, ich bin online!")
-
 
 @tasks.loop(minutes=1440)
 async def check_new_mails():
@@ -160,7 +155,7 @@ async def check_new_mails():
     This function checks for new emails every 1440 minutes (24 hours).
     If there are new emails, it sends a message to a specific channel with the number of vegan meals for the next week and a preview image.
     """
-    channel = client.get_channel(1200385984337027124)
+    channel = client.get_channel(1160946863797719160)
     if check_mail(current_kw + 1):
         file_path = f"vorschau_{current_kw + 1}.png"
         file = discord.File(file_path)
