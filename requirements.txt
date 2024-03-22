@@ -1,3 +1,5 @@
-python-dotenv
+python-dotenv~=1.0.1
 discord.py
 PyMuPDF
+
+PyPDF2~=3.0.1
