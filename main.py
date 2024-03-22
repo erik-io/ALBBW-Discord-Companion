@@ -9,7 +9,8 @@ import discord
 # Import custom modules
 # from Vegans import vegan_food
 from check_mail import check_mail
-from responses import *
+from responses import cafeteria_info
+
 
 # Initialize logging
 def setup_logging():
@@ -140,7 +141,6 @@ async def on_ready():
     if channel:
         await channel.send("Hallo, ich bin online!")
 
-
 @client.event
 async def on_message(message):
     """
@@ -153,27 +153,21 @@ async def on_message(message):
 
     message_to_lower = message.content.lower()
 
-    if message_to_lower == "essen":
+    if message_to_lower == "!":
+        await message.channel.send(f"<@{message.author.id}>\n !essen - Essensplan\n !öffnungszeiten - Öffnungszeiten der Cafeteria\n !kaffee - ????\n !info - ?????")
+    elif message_to_lower == "!essen":
         # Pfad zur .png-Datei, die Sie senden möchten
         file_path = f"vorschau_{current_kw}.png"
         if os.path.exists(file_path):
             # Erstellen Sie ein discord. File-Objekt mit dem Pfad zur Datei
             file = discord.File(file_path)
             await message.channel.send("Hier ist die Vorschau:", file=file)
-        else:
-            await message.channel.send("Es scheint, als gäbe es keine Vorschau zum Senden.")
     elif message.content.lower() == "!öffnungszeiten":
-            await message.channel.send(oeffnungszeiten_info())
+            await message.channel.send(oeffnungszeiten())
             logging.info("Sent opening hours")
     elif message.content.lower() == "!kaffee":
-            await message.channel.send(kaffee_info())
+            await message.channel.send(kaffeespezialitaeten())
             logging.info("Sent coffee menu")
-    elif message.content.lower() == "!getränke":
-            await message.channel.send(getraenke_info())
-            logging.info("Sent drinks menu")
-    elif message.content.lower() == "!snacks":
-            await message.channel.send(snacks_info())
-            logging.info("Sent snacks menu")
     elif message.content.lower() == "!info":
             await message.channel.send(cafeteria_info())
             logging.info("Sent info")

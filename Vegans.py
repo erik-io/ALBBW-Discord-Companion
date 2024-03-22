@@ -1,6 +1,12 @@
-from datetime import datetime
-import fitz  # PyMuPDF
+import PyPDF2
+def vegan_meals(current_kw):
+    open_file = open("Speiseplan_12.pdf", "rb")
+    pdf = PyPDF2.PdfReader(open_file)
 
-"""
-Kein Plan wie ich diese Logik gestalten soll
-"""
+    veg_count = 0
+
+    for page_num in range(len(pdf.pages)):
+        page = pdf.pages[page_num]
+        text = page.extract_text()
+        veg_count += text.lower().count("vegan")
+        return veg_count
