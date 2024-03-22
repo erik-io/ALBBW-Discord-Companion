@@ -2,7 +2,6 @@ import os
 import datetime
 import logging
 import configparser
-from asyncio import tasks
 from logging.handlers import RotatingFileHandler
 from dotenv import load_dotenv
 import discord
