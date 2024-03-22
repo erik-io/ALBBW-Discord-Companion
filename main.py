@@ -94,6 +94,24 @@ logging.debug("Intents set up successfully")
 client = discord.Client(intents=intents)
 logging.debug("Client instance created")
 
+def oeffnungszeiten():
+    return (f'__**Öffnungszeiten:**__\n'
+            f'> Montag - Freitag        08:30 Uhr - 15:00 Uhr\n'
+            f'> Sonderöffnungszeiten    08:30 Uhr - 10.30 Uhr\n'
+            f'> Mobile Cafeteria        08:30 Uhr - 11:00 Uhr\n')
+
+def kaffeespezialitaeten():
+    return (f'__**Kaffeespezialitäten:**__\n'
+            f'> Milchkaffee (8,9)         1,70 €\n'
+            f'> Heiße Schokolade (8)      1,70 €\n'
+            f'> Cappuccino (8,9)          1,50 €\n'
+            f'> Schokoccino (8,9)         1,70 €\n'
+            f'> Latte Macciato (8,9)      1,70 €\n'
+            f'> Espresso (9)              1,00 €\n'
+            f'> Doppelter Espresso (9)    1,70 €\n'
+            f'> Espresso Macchiato (9)    1,30 €\n'
+            f'> Café Créme (9)            1,45 €\n')
+
 @client.event
 async def on_ready():
     """
@@ -121,6 +139,7 @@ async def on_ready():
     if channel:
         await channel.send("Hallo, ich bin online!")
 
+from oeffnungszeiten import cafeteria_info
 @client.event
 async def on_message(message):
     """
@@ -142,6 +161,15 @@ async def on_message(message):
             await message.channel.send("Hier ist die Vorschau:", file=file)
         else:
             await message.channel.send("Es scheint, als gäbe es keine Vorschau zum Senden.")
+    elif message.content.lower() == "!öffnungszeiten":
+            await message.channel.send(oeffnungszeiten())
+            logging.info("Sent opening hours")
+    elif message.content.lower() == "!kaffee":
+            await message.channel.send(kaffeespezialitaeten())
+            logging.info("Sent coffee menu")
+    elif message.content.lower() == "!info":
+            await message.channel.send(cafeteria_info())
+            logging.info("Sent info")
 
 
 async def ping_role(role_name, message):
