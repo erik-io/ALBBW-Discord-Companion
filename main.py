@@ -2,10 +2,13 @@ import os
 import datetime
 import logging
 import configparser
+from asyncio import tasks
 from logging.handlers import RotatingFileHandler
 from dotenv import load_dotenv
 import discord
+from discord.ext import tasks
 
+from Vegans import vegan_meals
 # Import custom modules
 # from Vegans import vegan_food
 from check_mail import check_mail
@@ -34,7 +37,7 @@ def setup_logging():
 
     # Create a rotating file handler for the log file
     # The log file will be 'bot.log', with a maximum size of 5MB, and a maximum of 1 backup files
-    log_file_handler = RotatingFileHandler('bot.log', maxBytes=5*1024*1024, backupCount=1)
+    log_file_handler = RotatingFileHandler('bot.log', maxBytes=5 * 1024 * 1024, backupCount=1)
 
     # Set the formatter for the file handler
     log_file_handler.setFormatter(log_formatter)
@@ -58,6 +61,7 @@ def setup_logging():
     # Log a message indicating that logging has been set up successfully
     logging.info("Logging set up successfully")
 
+
 # Call the setup_logging function to set up logging
 setup_logging()
 
@@ -73,8 +77,8 @@ try:
     else:
         logging.info("DISCORD_TOKEN is set")
 except ValueError as e:
-    logging.error(e) # Log the error message
-    exit(1) # Exit the program with a status code of 1
+    logging.error(e)  # Log the error message
+    exit(1)  # Exit the program with a status code of 1
 
 logging.debug("Environment variables loaded successfully")
 
@@ -96,13 +100,21 @@ logging.debug("Intents set up successfully")
 client = discord.Client(intents=intents)
 logging.debug("Client instance created")
 
+
 def oeffnungszeiten():
+    """
+    This function returns the opening hours of the cafeteria as a formatted string.
+    """
     return (f'__**Öffnungszeiten:**__\n'
             f'> Montag - Freitag        08:30 Uhr - 15:00 Uhr\n'
             f'> Sonderöffnungszeiten    08:30 Uhr - 10.30 Uhr\n'
             f'> Mobile Cafeteria        08:30 Uhr - 11:00 Uhr\n')
 
+
 def kaffeespezialitaeten():
+    """
+    This function returns the coffee specialties of the cafeteria as a formatted string.
+    """
     return (f'__**Kaffeespezialitäten:**__\n'
             f'> Milchkaffee (8,9)         1,70 €\n'
             f'> Heiße Schokolade (8)      1,70 €\n'
@@ -113,6 +125,7 @@ def kaffeespezialitaeten():
             f'> Doppelter Espresso (9)    1,70 €\n'
             f'> Espresso Macchiato (9)    1,30 €\n'
             f'> Café Créme (9)            1,45 €\n')
+
 
 @client.event
 async def on_ready():
@@ -141,6 +154,20 @@ async def on_ready():
     if channel:
         await channel.send("Hallo, ich bin online!")
 
+
+@tasks.loop(minutes=1440)
+async def check_new_mails():
+    """
+    This function checks for new emails every 1440 minutes (24 hours).
+    If there are new emails, it sends a message to a specific channel with the number of vegan meals for the next week and a preview image.
+    """
+    channel = client.get_channel(1200385984337027124)
+    if check_mail(current_kw + 1):
+        file_path = f"vorschau_{current_kw + 1}.png"
+        file = discord.File(file_path)
+        await channel.send(f"Nächste Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.\nHier ist die Vorschau:", file=file)
+
+
 @client.event
 async def on_message(message):
     """
@@ -154,36 +181,42 @@ async def on_message(message):
     message_to_lower = message.content.lower()
 
     if message_to_lower == "!":
-        await message.channel.send(f"<@{message.author.id}>\n !essen - Essensplan\n !öffnungszeiten - Öffnungszeiten der Cafeteria\n !kaffee - ????\n !info - ?????")
+        await message.channel.send(
+            f"<@{message.author.id}>\n !essen - Essensplan\n !öffnungszeiten - Öffnungszeiten der Cafeteria\n !kaffee - ????\n !info - ?????")
     elif message_to_lower == "!essen":
         # Pfad zur .png-Datei, die Sie senden möchten
         file_path = f"vorschau_{current_kw}.png"
         if os.path.exists(file_path):
             # Erstellen Sie ein discord. File-Objekt mit dem Pfad zur Datei
             file = discord.File(file_path)
-            await message.channel.send("Hier ist die Vorschau:", file=file)
+            await message.channel.send(f"Diese Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.\nHier ist die Vorschau:", file=file)
     elif message.content.lower() == "!öffnungszeiten":
-            await message.channel.send(oeffnungszeiten())
-            logging.info("Sent opening hours")
+        await message.channel.send(oeffnungszeiten())
+        logging.info("Sent opening hours")
     elif message.content.lower() == "!kaffee":
-            await message.channel.send(kaffeespezialitaeten())
-            logging.info("Sent coffee menu")
+        await message.channel.send(kaffeespezialitaeten())
+        logging.info("Sent coffee menu")
     elif message.content.lower() == "!info":
-            await message.channel.send(cafeteria_info())
-            logging.info("Sent info")
+        await message.channel.send(cafeteria_info())
+        logging.info("Sent info")
 
 
 async def ping_role(role_name, message):
     """
-    This function sends a message to a specific channel and pings a specific role.
+    This function sends a message to a specific role in a specific channel.
     """
-    channel = client.get_channel(1200385984337027124)
+    channel = client.get_channel(1200385984337027124)  # Beispiel-Channel-ID
     role = discord.utils.get(channel.guild.roles, name=role_name)
-    if channel:
-        # Send a message and ping the role
+    if channel and role:
         await channel.send(f"<@&{role.id}> {message}")
 
-if __name__ == "__main__":
+
+def main():
+    """
+    The main function of the bot. It checks for new emails and then runs the bot.
+    """
+    # Check for new emails
+    logging.info("Checking for new emails")
     # Run the bot
     try:
         client.run(DISCORD_TOKEN)
@@ -191,6 +224,6 @@ if __name__ == "__main__":
         logging.error("Invalid or expired DISCORD_TOKEN")
         exit(1)  # Exit the program with a status code of 1
 
-    # Check for new emails
-    logging.info("Checking for new emails")
-    check_mail()
+
+if __name__ == "__main__":
+    main()
