@@ -9,6 +9,7 @@ import discord
 # Import custom modules
 # from Vegans import vegan_food
 from check_mail import check_mail
+from responses import *
 
 # Initialize logging
 def setup_logging():
@@ -139,7 +140,7 @@ async def on_ready():
     if channel:
         await channel.send("Hallo, ich bin online!")
 
-from oeffnungszeiten import cafeteria_info
+
 @client.event
 async def on_message(message):
     """
@@ -162,11 +163,17 @@ async def on_message(message):
         else:
             await message.channel.send("Es scheint, als gäbe es keine Vorschau zum Senden.")
     elif message.content.lower() == "!öffnungszeiten":
-            await message.channel.send(oeffnungszeiten())
+            await message.channel.send(oeffnungszeiten_info())
             logging.info("Sent opening hours")
     elif message.content.lower() == "!kaffee":
-            await message.channel.send(kaffeespezialitaeten())
+            await message.channel.send(kaffee_info())
             logging.info("Sent coffee menu")
+    elif message.content.lower() == "!getränke":
+            await message.channel.send(getraenke_info())
+            logging.info("Sent drinks menu")
+    elif message.content.lower() == "!snacks":
+            await message.channel.send(snacks_info())
+            logging.info("Sent snacks menu")
     elif message.content.lower() == "!info":
             await message.channel.send(cafeteria_info())
             logging.info("Sent info")
