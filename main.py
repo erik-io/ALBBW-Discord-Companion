@@ -159,7 +159,8 @@ async def check_new_mails():
     if check_mail(current_kw + 1):
         file_path = f"vorschau_{current_kw + 1}.png"
         file = discord.File(file_path)
-        await channel.send(f"Nächste Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.\nHier ist die Vorschau:", file=file)
+        await channel.send(
+            f"Nächste Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.\nHier ist die Vorschau:", file=file)
 
 
 @client.event
@@ -175,15 +176,15 @@ async def on_message(message):
     message_to_lower = message.content.lower()
 
     if message_to_lower == "!":
-        await message.channel.send(
-            f"<@{message.author.id}>\n !essen - Essensplan\n !öffnungszeiten - Öffnungszeiten der Cafeteria\n !kaffee - ????\n !info - ?????")
+        await message.channel.send(f"<@{message.author.id}>\n !essen - Essensplan\n !öffnungszeiten - Öffnungszeiten der Cafeteria\n !kaffee - ????\n !info - ?????")
     elif message_to_lower == "!essen":
         # Pfad zur .png-Datei, die Sie senden möchten
         file_path = f"vorschau_{current_kw}.png"
         if os.path.exists(file_path):
             # Erstellen Sie ein discord. File-Objekt mit dem Pfad zur Datei
             file = discord.File(file_path)
-            await message.channel.send(f"Diese Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.\nHier ist die Vorschau:", file=file)
+            await message.channel.send(
+                f"Diese Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.\nHier ist die Vorschau:", file=file)
     elif message.content.lower() == "!öffnungszeiten":
         await message.channel.send(oeffnungszeiten())
         logging.info("Sent opening hours")
@@ -209,6 +210,7 @@ def main():
     """
     The main function of the bot. It checks for new emails and then runs the bot.
     """
+    check_mail(current_kw)
     # Check for new emails
     logging.info("Checking for new emails")
     # Run the bot
