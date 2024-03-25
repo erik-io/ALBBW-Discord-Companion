@@ -183,8 +183,7 @@ async def on_message(message):
         if os.path.exists(file_path):
             # Erstellen Sie ein discord. File-Objekt mit dem Pfad zur Datei
             file = discord.File(file_path)
-            await message.channel.send(
-                f"Diese Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.\nHier ist die Vorschau:", file=file)
+            await ping_role("Veganer", f"Nächste Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.\nHier ist die Vorschau:", file)
     elif message.content.lower() == "!öffnungszeiten":
         await message.channel.send(oeffnungszeiten())
         logging.info("Sent opening hours")
@@ -196,14 +195,14 @@ async def on_message(message):
         logging.info("Sent info")
 
 
-async def ping_role(role_name, message):
+async def ping_role(role_name, message, file):
     """
     This function sends a message to a specific role in a specific channel.
     """
     channel = client.get_channel(1200385984337027124)  # Beispiel-Channel-ID
     role = discord.utils.get(channel.guild.roles, name=role_name)
     if channel and role:
-        await channel.send(f"<@&{role.id}> {message}")
+        await channel.send(f"<@&{role.id}> {message}", file=file)
 
 
 def main():
