@@ -199,7 +199,7 @@ async def ping_role(role_name, message, file):
     """
     This function sends a message to a specific role in a specific channel.
     """
-    channel = client.get_channel(1200385984337027124)  # Beispiel-Channel-ID
+    channel = client.get_channel(1160946863797719160)  # Beispiel-Channel-ID
     role = discord.utils.get(channel.guild.roles, name=role_name)
     if channel and role:
         await channel.send(f"<@&{role.id}> {message}", file=file)
