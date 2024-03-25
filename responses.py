@@ -1,9 +1,13 @@
+import logging
+
+
 # noinspection SpellCheckingInspection
 def oeffnungszeiten_info():
     """
     This function returns a formatted string containing the opening hours of the cafeteria.
     The string is formatted using Markdown syntax for bold and code block elements.
     """
+    logging.info("Sent opening hours")
     return (f'# Cafeteria\n'
             f'__**Öffnungszeiten:**__\n'
             f'```Montag - Freitag        08:30 Uhr - 15:00 Uhr\n'
@@ -17,6 +21,7 @@ def kaffee_info():
     This function returns a formatted string containing the coffee specialties and their prices.
     The string is formatted using Markdown syntax for bold and code block elements.
     """
+    logging.info("Sent coffee specialties")
     return (f'__**Kaffeespezialitäten:**__\n'
             f'```Milchkaffee                      1,70 €\n'
             f'Heiße Schokolade                 1,70 €\n'
@@ -35,6 +40,7 @@ def getraenke_info():
     This function returns a formatted string containing the drinks and their prices.
     The string is formatted using Markdown syntax for bold and code block elements.
     """
+    logging.info("Sent drinks")
     return (f'__**Getränke:**__\n'
             f'```Eistee Orange, 0,5l              1,20 €\n'
             f'Eistee Himbeere, 0,5l            1,20 €\n'
@@ -59,6 +65,7 @@ def snacks_info():
     This function returns a formatted string containing the snacks and their prices.
     The string is formatted using Markdown syntax for bold and code block elements.
     """
+    logging.info("Sent snacks")
     return (f'__**Süßwaren und Snacks:**__\n'
             f'```Cookie, 100 g hell und dunkel    1,80 €\n'
             f'Snickers, 50 g                   0,90 €\n'
@@ -80,4 +87,5 @@ def cafeteria_info():
     This function returns a formatted string containing the complete cafeteria information. It concatenates the
     strings returned by the oeffnungszeiten_info, kaffee_info, getraenke_info, and snacks_info functions.
     """
+    logging.info("Sent complete cafeteria information")
     return oeffnungszeiten_info() + kaffee_info() + getraenke_info() + snacks_info()
