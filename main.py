@@ -28,6 +28,11 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 logging.debug("Bot instance created")
 
 
+@bot.command(name='test')
+async def test(ctx):
+    await ctx.send("Test erfolgreich")
+
+
 @bot.command(name='bclear')
 async def bclear(ctx):
     """
