@@ -6,6 +6,7 @@ logging.basicConfig(filename='webhook.log', level=logging.INFO, format='%(asctim
 
 app = Flask(__name__)
 
+
 @app.route('/webhook', methods=['POST'])
 def handle_webhook():
     data = request.json
@@ -13,6 +14,7 @@ def handle_webhook():
     if data['event'] == 'push':
         subprocess.call(['./update.sh'])
         return jsonify({'status': 'success'})
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=3000)
