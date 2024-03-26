@@ -28,6 +28,18 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 logging.debug("Bot instance created")
 
 
+@bot.command(name='bclear')
+async def bclear(ctx):
+    """
+    This function clears the chat when the 'clear' command is used.
+    """
+    if ctx.author.id == 630453809428299777 or ctx.author.id == 224856290545893376:
+        await ctx.channel.purge(limit=None, bulk=True)
+        await ctx.send("Chat wurde gelöscht.", delete_after=5)
+    else:
+        await ctx.send("Du hast nicht die Berechtigung, diesen Befehl auszuführen.")
+
+
 @bot.command(name='clear')
 async def clear(ctx):
     """
