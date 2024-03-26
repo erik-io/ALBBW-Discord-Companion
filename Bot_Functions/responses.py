@@ -121,3 +121,4 @@ async def ping_role(role_name, message, bot):
     role = discord.utils.get(channel.guild.roles, name=role_name)
     if channel and role:
         await channel.send(f"<@&{role.id}> {message}")
+
