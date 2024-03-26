@@ -28,9 +28,28 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 logging.debug("Bot instance created")
 
 
-@bot.command(name='test')
-async def test(ctx):
-    await ctx.send("Test erfolgreich")
+@bot.command(name='befehle')
+async def befehle(ctx):
+    """
+    This function sends a list of available commands when the 'befehle' command is used.
+    """
+    logging.info("Befehl wurde von %s ausgeführt", ctx.author)
+    await ctx.message.delete()
+    await ctx.send(befehlsliste())
+
+
+@bot.command(name='vorschlag')
+async def vorschlag(ctx):
+    """
+    This function sends a message with command suggestions when the 'vorschläge' command is used.
+    """
+    admin_ids = [630453809428299777, 224856290545893376]    # (for open source: remove our IDs and replace with yours)
+    for admin_id in admin_ids:
+        admin = await bot.fetch_user(admin_id)
+        if admin:
+            await admin.send(f"{ctx.author} wünscht sich eine Funktion für den Bot.: "
+                             f"{ctx.message.content.replace('!vorschlag ', '')}\n")
+    await ctx.send("Dein Vorschlag wurde an die Admins gesendet. Vielen Dank!", delete_after=5)
 
 
 @bot.command(name='bclear')
@@ -38,6 +57,7 @@ async def bclear(ctx):
     """
     This function clears the chat when the 'clear' command is used.
     """
+    # (for open source: remove our IDs and replace with yours)
     if ctx.author.id == 630453809428299777 or ctx.author.id == 224856290545893376:
         await ctx.channel.purge(limit=None, bulk=True)
         await ctx.send("Chat wurde gelöscht.", delete_after=5)
@@ -50,7 +70,7 @@ async def clear(ctx):
     """
     This function clears the chat when the 'clear' command is used.
     """
-    if ctx.author.id == 630453809428299777 or ctx.author.id == 224856290545893376:
+    if ctx.author.id == 630453809428299777 or ctx.author.id == 224856290545893376:  # (for open source: remove our IDs)
         await ctx.channel.purge(limit=None, bulk=False)
         await ctx.send("Chat wurde gelöscht.", delete_after=5)
     else:
@@ -128,6 +148,14 @@ async def oeffnungszeiten(ctx):
     await ctx.send(oeffnungszeiten())
 
 
+@bot.command(name='getränke')
+async def getraenke(ctx):
+    """
+    This function sends the drinks menu when the 'getränke' command is used.
+    """
+    await ctx.send(getraenke_info())
+
+
 @bot.event
 async def on_ready():
     """
@@ -156,7 +184,7 @@ async def check_new_mails():
     This function checks for new emails every 1440 minutes (24 hours). If there are new emails, it sends a message to
     a specific channel with the number of vegan meals for the next week and a preview image.
     """
-    channel = bot.get_channel(1200385984337027124)
+    channel = bot.get_channel(1200385984337027124)  # (for open source: replace with your channel ID)
     if check_mail(current_kw + 1):
         file_path = f"vorschau_{current_kw + 1}.png"
         file = discord.File(file_path)

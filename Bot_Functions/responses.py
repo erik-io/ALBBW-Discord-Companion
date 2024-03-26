@@ -1,5 +1,20 @@
 import discord
 
+def befehlsliste():
+    """
+    This function returns a formatted string containing the coffee specialties and their prices.
+    The string is formatted using Markdown syntax for bold and code block elements.
+    """
+    return (f'__**Befehlsliste:**__\n'
+            f'```!info             Zeigt Informationen zur Cafeteria\n'
+            f'!essen            Zeigt den Speiseplan\n'
+            f'!vegan            Zeigt die Anzahl der veganen Gerichte\n'
+            f'!feedback         Sendet Feedback an die Admins\n'
+            f'!kaffee           Zeigt das Kaffeeangebot\n'
+            f'!getränke         Zeigt das Getränkeangebot\n'
+            f'!snacks           Zeigt das Snackangebot\n'
+            f'!öffnungszeiten   Zeigt die Öffnungszeiten der Cafeteria\n'
+            f'!vorschlag       Sende uns einen Wunsch, den du hast, für unseren Bot.```\n')
 
 # noinspection SpellCheckingInspection
 def oeffnungszeiten_info():

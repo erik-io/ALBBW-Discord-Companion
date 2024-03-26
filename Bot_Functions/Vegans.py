@@ -7,6 +7,9 @@ last_ping_file = "last_vegan_ping.txt"
 
 
 def vegan_meals(current_kw):
+    """
+        Counts the number of vegan meals in the current week's menu.
+    """
     open_file = open(f'Speiseplan_{current_kw}.pdf', "rb")
     pdf = PyPDF2.PdfReader(open_file)
 
@@ -21,7 +24,7 @@ def vegan_meals(current_kw):
 
 def save_last_ping_date():
     """
-    Speichert das aktuelle Datum als Datum des letzten Pings in einer Datei.
+    Saves the current date as the date of the last ping in a file.
     """
     with open(last_ping_file, "w") as file:
         file.write(datetime.date.today().isoformat())
@@ -29,8 +32,8 @@ def save_last_ping_date():
 
 def can_ping_vegans():
     """
-    Überprüft, ob die "Veganer"-Rolle seit Beginn der aktuellen Woche bereits gepingt wurde.
-    Gibt True zurück, wenn ein Ping erlaubt ist, sonst False.
+    Checks if the "Vegan" role has already been pinged since the start of the current week.
+    Returns True if a ping is allowed, otherwise False.
     """
     if not os.path.exists(last_ping_file):
         return True

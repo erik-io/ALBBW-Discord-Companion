@@ -2,3 +2,6 @@ python-dotenv~=1.0.1
 discord.py
 PyMuPDF
 PyPDF2~=3.0.1
+discord~=2.3.2
+Flask~=3.0.2
+configparser~=6.0.1
