@@ -85,6 +85,7 @@ def cafeteria_info():
     """
     return oeffnungszeiten_info() + kaffee_info() + getraenke_info() + snacks_info()
 
+
 def oeffnungszeiten():
     """
     This function returns the opening hours of the cafeteria as a formatted string.

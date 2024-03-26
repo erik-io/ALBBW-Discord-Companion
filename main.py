@@ -8,6 +8,7 @@ from Bot_Functions.check_mail import *
 from Bot_Functions.log import setup_logging
 from Bot_Functions.responses import *
 
+# Set up logging and load environment variables
 logging.debug("Environment variables loaded successfully")
 
 # Get the current week number
@@ -15,28 +16,36 @@ logging.debug("Getting current date and week number")
 current_kw = datetime.date.today().isocalendar()[1]
 logging.debug(f"Current week number: {current_kw}")
 
+# Set up intents for the bot
 logging.debug("Setting up intents")
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 intents.guilds = True
 
-bot = commands.Bot(command_prefix='.', intents=intents)
+# Create a bot instance
+bot = commands.Bot(command_prefix='!', intents=intents)
 logging.debug("Bot instance created")
 
 
 @bot.command(name='info')
 async def info(ctx):
+    """
+    This function sends cafeteria information when the 'info' command is used.
+    """
     await ctx.send(cafeteria_info())
 
 
 @bot.command(name='essen')
 async def essen(ctx):
+    """
+    This function sends the meal plan when the 'essen' command is used.
+    """
     file_path = f"vorschau_{current_kw}.png"
     if os.path.exists(file_path):
         if vegan_meals(current_kw) == 0:
             file = discord.File(file_path)
-            await ctx.send(f"Diese Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.\nHier ist die Vorschau:",
+            await ctx.send(f"Hier ist die Vorschau:",
                            file=file)
         else:
             file = discord.File(file_path)
@@ -48,27 +57,31 @@ async def essen(ctx):
 
 @bot.command(name='feedback')
 async def feedback(ctx, *, message: str):
+    """
+    This function sends feedback to the admins when the 'feedback' command is used.
+    """
     admin_ids = [630453809428299777, 224856290545893376]  # Ersetze dies mit den tatsächlichen IDs der Admins
     for admin_id in admin_ids:
         admin = await bot.fetch_user(admin_id)
         if admin:
-            await admin.send(f"Feedback von {ctx.author}: {message}")
+            await admin.send(f"{message}")
     # Sende die Bestätigungsnachricht als Direktnachricht an den Nutzer
     await ctx.author.send("Dein Feedback wurde an die Admins gesendet. Vielen Dank!")
 
 
 @bot.command(name='kaffee')
 async def kaffee(ctx):
+    """
+    This function sends the coffee menu when the 'kaffee' command is used.
+    """
     await ctx.send(kaffeespezialitaeten())
-
-
-@bot.command(name='info')
-async def info(ctx):
-    await ctx.send(cafeteria_info())
 
 
 @bot.command(name='öffnungszeiten')
 async def oeffnungszeiten(ctx):
+    """
+    This function sends the opening hours when the 'öffnungszeiten' command is used.
+    """
     await ctx.send(oeffnungszeiten())
 
 
@@ -93,18 +106,12 @@ async def on_message(message):
     # Log the message in the console
     logging.debug(f"[{message.channel}] {message.author}: {message.content}")
 
-    message_to_lower = message.content.lower()
-
-    if message_to_lower == "!":
-        await message.channel.send(
-            f"<@{message.author.id}>\n !essen - Essensplan\n !öffnungszeiten - Öffnungszeiten der Cafeteria\n !kaffee - ????\n !info - ?????")
-
 
 @tasks.loop(minutes=1440)
 async def check_new_mails():
     """
-    This function checks for new emails every 1440 minutes (24 hours).
-    If there are new emails, it sends a message to a specific channel with the number of vegan meals for the next week and a preview image.
+    This function checks for new emails every 1440 minutes (24 hours). If there are new emails, it sends a message to
+    a specific channel with the number of vegan meals for the next week and a preview image.
     """
     channel = bot.get_channel(1200385984337027124)
     if check_mail(current_kw + 1):

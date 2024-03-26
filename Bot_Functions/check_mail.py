@@ -11,20 +11,20 @@ processed_mails = "processed_mails.txt"
 
 def check_mail(current_kw):
     """
-    This function checks the email account for new emails with a specific subject line.
-    If a new email is found, it downloads any attached PDF files, generates a preview image of the first page, and then deletes the PDF.
-    It also marks the email as processed to avoid processing it again in the future.
+    This function checks the email account for new emails with a specific subject line. If a new email is found,
+    it downloads any attached PDF files, generates a preview image of the first page, and then deletes the PDF. It
+    also marks the email as processed to avoid processing it again in the future.
     """
     # Email account details
-    EMAIL = os.getenv('EMAIL')
-    SERVER = os.getenv('SERVER')
-    PASSWORD = os.getenv('PASSWORD')
+    email = os.getenv('EMAIL')
+    server = os.getenv('SERVER')
+    password = os.getenv('PASSWORD')
 
     # Connect to the email server
-    mail = imaplib.IMAP4_SSL(SERVER)
+    mail = imaplib.IMAP4_SSL(server)
     try:
         # Login to the email account
-        mail.login(EMAIL, PASSWORD)
+        mail.login(email, password)
         # Select the inbox
         mail.select('inbox')
 
@@ -74,7 +74,7 @@ def check_mail(current_kw):
                     print(f"PDF-Vorschau gespeichert als {output}")
                     doc.close()
                     # Delete the PDF file
-                    #os.remove(filepath)
+                    os.remove(filepath)
                     # Mark the email as processed
                     mark_mail_as_processed(subject)
                     return True
