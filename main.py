@@ -48,12 +48,20 @@ async def essen(ctx):
             await ctx.send(f"Hier ist die Vorschau:",
                            file=file)
         else:
-            file = discord.File(file_path)
-            await ctx.send(ping_role("Veganer", f"Diese Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.\n"
-                                                f"Hier ist die vorschau:", bot), file=file)
+            if can_ping_vegans():
+                file = discord.File(file_path)
+                await ctx.send(
+                    ping_role("Veganer", f"Diese Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.\n"
+                                         f"Hier ist die vorschau:", bot), file=file)
+                save_last_ping_date()
+            else:
+                file = discord.File(file_path)
+                await ctx.send(f"Hier ist die Vorschau:", file=file)
     else:
         await ctx.send("Es gibt keine Vorschau für diese Woche.")
 
+
+@bot
 
 @bot.command(name='feedback')
 async def feedback(ctx, *, message: str):
