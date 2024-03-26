@@ -52,6 +52,7 @@ def getraenke_info():
             f'Coca Cola, 0,33l                 1,40 €\n'
             f'Sprite, 0,33l                    1,40 €\n'
             f'Fanta, 0,5l                      1,70 €\n'
+            f'Club-Mate, 0,5l                  2,20 €\n'
             f'Kaffee klein, 0,2 l              1,20 €\n'
             f'Kaffee groß, 0,3 l               1,65 €```\n')
 
