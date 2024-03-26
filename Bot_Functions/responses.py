@@ -1,3 +1,6 @@
+import discord
+
+
 # noinspection SpellCheckingInspection
 def oeffnungszeiten_info():
     """
@@ -81,3 +84,38 @@ def cafeteria_info():
     strings returned by the oeffnungszeiten_info, kaffee_info, getraenke_info, and snacks_info functions.
     """
     return oeffnungszeiten_info() + kaffee_info() + getraenke_info() + snacks_info()
+
+def oeffnungszeiten():
+    """
+    This function returns the opening hours of the cafeteria as a formatted string.
+    """
+    return (f'__**Öffnungszeiten:**__\n'
+            f'> Montag - Freitag        08:30 Uhr - 15:00 Uhr\n'
+            f'> Sonderöffnungszeiten    08:30 Uhr - 10.30 Uhr\n'
+            f'> Mobile Cafeteria        08:30 Uhr - 11:00 Uhr\n')
+
+
+def kaffeespezialitaeten():
+    """
+    This function returns the coffee specialties of the cafeteria as a formatted string.
+    """
+    return (f'__**Kaffeespezialitäten:**__\n'
+            f'> Milchkaffee (8,9)         1,70 €\n'
+            f'> Heiße Schokolade (8)      1,70 €\n'
+            f'> Cappuccino (8,9)          1,50 €\n'
+            f'> Schokoccino (8,9)         1,70 €\n'
+            f'> Latte Macciato (8,9)      1,70 €\n'
+            f'> Espresso (9)              1,00 €\n'
+            f'> Doppelter Espresso (9)    1,70 €\n'
+            f'> Espresso Macchiato (9)    1,30 €\n'
+            f'> Café Créme (9)            1,45 €\n')
+
+
+async def ping_role(role_name, message, bot):
+    """
+    This function sends a message to a specific role in a specific channel.
+    """
+    channel = bot.get_channel(1200385984337027124)  # Beispiel-Channel-ID
+    role = discord.utils.get(channel.guild.roles, name=role_name)
+    if channel and role:
+        await channel.send(f"<@&{role.id}> {message}")
