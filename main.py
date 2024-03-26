@@ -61,7 +61,13 @@ async def essen(ctx):
         await ctx.send("Es gibt keine Vorschau für diese Woche.")
 
 
-@bot
+@bot.command(name='vegan')
+async def vegan(ctx):
+    """
+    This function sends the number of vegan meals for the current week when the 'vegan' command is used.
+    """
+    await ctx.send(f"In dieser Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.")
+
 
 @bot.command(name='feedback')
 async def feedback(ctx, *, message: str):
