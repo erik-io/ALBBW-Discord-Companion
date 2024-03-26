@@ -52,7 +52,7 @@ async def feedback(ctx, *, message: str):
     for admin_id in admin_ids:
         admin = await bot.fetch_user(admin_id)
         if admin:
-            await admin.send(f"Feedback von {ctx.author}: {message}")
+            await admin.send(f"Feedbak von {ctx.author}: {message}")
     # Sende die Bestätigungsnachricht als Direktnachricht an den Nutzer
     await ctx.author.send("Dein Feedback wurde an die Admins gesendet. Vielen Dank!")
 
