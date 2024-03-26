@@ -174,7 +174,7 @@ try:
         logging.info("DISCORD_TOKEN is set")
 except ValueError as e:
     logging.error(e)  # Log the error message
-    exit(1)  # Exit the program with a status code of 1
+    exit(1)  # Exit the program with a status code of 2
 
 if __name__ == "__main__":
     main()
