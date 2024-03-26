@@ -14,7 +14,7 @@ def befehlsliste():
             f'!getränke         Zeigt das Getränkeangebot\n'
             f'!snacks           Zeigt das Snackangebot\n'
             f'!öffnungszeiten   Zeigt die Öffnungszeiten der Cafeteria\n'
-            f'!vorschlag       Sende uns einen Wunsch, den du hast, für unseren Bot.```\n')
+            f'!vorschlag        Sende uns einen Wunsch, den du hast, für unseren Bot.```\n')
 
 # noinspection SpellCheckingInspection
 def oeffnungszeiten_info():
