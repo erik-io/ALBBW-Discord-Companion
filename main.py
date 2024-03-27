@@ -90,7 +90,7 @@ async def essen(ctx):
     """
     This function sends the meal plan when the 'essen' command is used.
     """
-    file_path = f"vorschau_{current_kw}.png"
+    file_path = f"vorschau_KW_{current_kw}.png"
     if os.path.exists(file_path):
         if vegan_meals(current_kw) == 0:
             file = discord.File(file_path)
@@ -123,13 +123,16 @@ async def feedback(ctx, *, message: str):
     """
     This function sends feedback to the admins when the 'feedback' command is used.
     """
+    # delete the message from the user
+    await ctx.message.delete()
+
     admin_ids = [630453809428299777, 224856290545893376]  # Ersetze dies mit den tatsächlichen IDs der Admins
     for admin_id in admin_ids:
         admin = await bot.fetch_user(admin_id)
         if admin:
             await admin.send(f"{message}")
     # Sende die Bestätigungsnachricht als Direktnachricht an den Nutzer
-    await ctx.author.send("Dein Feedback wurde an die Admins gesendet. Vielen Dank!")
+    await ctx.send("Dein Feedback wurde an die Admins gesendet. Vielen Dank!", delete_after=5)
 
 
 @bot.command(name='kaffee')
@@ -161,6 +164,7 @@ async def on_ready():
     """
     Event listener that is called when the bot successfully connects to Discord.
     """
+    check_new_mails.start()
     logging.info(f"Logged in as {bot.user}")
     server_count = len(bot.guilds)
     logging.info(f"Bot is ready to receive and process commands on {server_count} servers.")
@@ -178,18 +182,29 @@ async def on_message(message):
     logging.debug(f"[{message.channel}] {message.author}: {message.content}")
 
 
-@tasks.loop(minutes=1440)
+@tasks.loop(minutes=1440)  # Läuft alle 1440 Minuten (24 Stunden)
 async def check_new_mails():
     """
     This function checks for new emails every 1440 minutes (24 hours). If there are new emails, it sends a message to
-    a specific channel with the number of vegan meals for the next week and a preview image.
+    a specific channel with the number of vegan meals for the next week and a preview image for the weeks +1, +2, and +3.
     """
-    channel = bot.get_channel(1160946863797719160)  # (for open source: replace with your channel ID)
-    if check_mail(current_kw + 1):
-        file_path = f"vorschau_{current_kw + 1}.png"
-        file = discord.File(file_path)
-        await channel.send(
-            f"Nächste Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.\nHier ist die Vorschau:", file=file)
+    current_kw = datetime.date.today().isocalendar()[1]
+
+    # Überprüft die Mails für die nächsten 3 Wochen
+    for i in range(1, 4):
+        if check_mail_for_week(current_kw + i):
+            file_path = f"vorschau_KW_{current_kw + i}.png"
+            if os.path.exists(file_path):
+                channel = bot.get_channel(1200385984337027124)  # Ersetzen Sie dies durch Ihre tatsächliche Kanal-ID
+                num_vegan_meals = vegan_meals(current_kw + i)
+                if num_vegan_meals > 0:
+                    file = discord.File(file_path)
+                    await channel.send(f"In KW {current_kw + i} gibt es {num_vegan_meals} vegane Mahlzeiten.\nHier ist die Vorschau:", file=file)
+                else:
+                    await channel.send(f"In KW {current_kw + i} gibt es keine veganen Mahlzeiten.")
+
+
+
 
 
 def main():
@@ -197,7 +212,7 @@ def main():
     The main function of the bot. It checks for new emails and then runs the bot.
     """
     setup_logging()
-    check_mail(current_kw)
+    check_mail_current_week()
 
     # Run the bot
     try:
@@ -212,6 +227,7 @@ try:
     logging.info("Loading environment variables from .env file")
     load_dotenv()
     DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
+
 
     # Check if the Discord token is set
     if DISCORD_TOKEN is None:

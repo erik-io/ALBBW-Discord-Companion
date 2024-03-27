@@ -10,11 +10,11 @@ import fitz
 processed_mails = "processed_mails.txt"
 
 
-def check_mail(current_kw):
+def check_mail_for_week(week_kw):
     """
-    This function checks the email account for new emails with a specific subject line. If a new email is found,
-    it downloads any attached PDF files, generates a preview image of the first page, and then deletes the PDF. It
-    also marks the email as processed to avoid processing it again in the future.
+    Checks the email account for new emails with a specific subject line for the given week number (week_kw).
+    If a new email is found, it downloads any attached PDF files, generates a preview image of the first page,
+    deletes the PDF, and marks the email as processed to avoid processing it again in the future.
     """
     # Email account details
     email_address = os.getenv('EMAIL')
@@ -24,66 +24,73 @@ def check_mail(current_kw):
     # Connect to the email server
     mail = imaplib.IMAP4_SSL(server)
     try:
-        # Login to the email account
         mail.login(email_address, password)
-        # Select the inbox
         mail.select('inbox')
 
-        # Get the current week number
-        # current_kw = datetime.date.today().isocalendar()[1]
-        # Check if the email has already been processed
-        if mail_already_processed(f"Fwd: Speisenplan KW {current_kw}"):
-            print("E-Mail bereits verarbeitet, überspringe...")
+        # Search for new emails with the specific subject line for the given week
+        typ, data = mail.search(None, f'(SUBJECT "WG: Speisenplan KW {week_kw}")')
+        if typ != 'OK':
+            print("Keine E-Mails gefunden.")
             return False
 
-        # Search for new emails with the specific subject line
-        typ, data = mail.search(None, f'SUBJECT "Fwd: Speisenplan KW {current_kw}"')
         for num in data[0].split():
-            # Fetch the email
             typ, data = mail.fetch(num, '(RFC822)')
-            # Parse the email
+            if typ != 'OK':
+                continue
+
             msg = email.message_from_bytes(data[0][1])
-            # Get the subject line
-            subject = decode_header(msg["Subject"])[0][0]
+            subject_tuple = decode_header(msg["Subject"])[0]  # Nimmt das erste Tupel aus der Liste
+            subject, charset = subject_tuple  # Entpackt das Tupel in den Betreff und das Charset
+            if charset is not None:
+                subject = subject.decode(charset)
+            else:
+                subject = str(subject)
 
-            print(f"Neue E-Mail gefunden: {subject}")
-
-            # Loop through the parts of the email
             for part in msg.walk():
-                # Skip if the part is multipart or doesn't have a Content-Disposition header
                 if part.get_content_maintype() == 'multipart' or part.get('Content-Disposition') is None:
                     continue
-
-                # Get the filename of the part
                 filename = part.get_filename()
-                # If the part is a PDF file
                 if filename and filename.endswith('.pdf'):
-                    # Save the PDF file
-                    filepath = filename
+                    filepath = f"Speiseplan_KW_{week_kw}.pdf"
                     with open(filepath, 'wb') as f:
                         f.write(part.get_payload(decode=True))
-                    print(f"PDF gespeichert: {filepath}")
 
-                    new_name = rename_file(filepath)
-
-                    # Generate a preview image of the first page of the PDF
-                    doc = fitz.open(new_name)
+                    # Generate preview and delete PDF
+                    doc = fitz.open(filepath)
                     page = doc.load_page(0)
                     pix = page.get_pixmap()
-                    output = f"vorschau_{current_kw}.png"
+                    output = f"vorschau_KW_{week_kw}.png"
                     pix.save(output)
-                    print(f"PDF-Vorschau gespeichert als {output}")
                     doc.close()
-                    # Delete the PDF file
                     #os.remove(filepath)
-                    # Mark the email as processed
-                    mark_mail_as_processed(subject)
+
+                    print(f"E-Mail verarbeitet und PDF-Vorschau für KW {week_kw} erstellt: {output}")
                     return True
+
+        print(f"Keine weiteren relevanten E-Mails für KW {week_kw} gefunden.")
+        return False
     finally:
-        print("Keine weiteren E-Mails gefunden, beende Verbindung...")
-        # Close the connection to the email server
         mail.close()
         mail.logout()
+
+
+def check_mail_current_week():
+    """
+    Checks emails for the current week.
+    """
+    current_kw = datetime.date.today().isocalendar()[1]
+    check_mail_for_week(current_kw)
+
+
+def check_mail_next_weeks():
+    """
+    Checks emails for the next week (current_week + 1) and the week after (current_week + 2).
+    """
+    current_kw = datetime.date.today().isocalendar()[1]
+    for i in range(1, 3):  # For next week and the week after
+        if check_mail_for_week(current_kw + i):
+            return True
+    return False
 
 
 def mail_already_processed(subject):
