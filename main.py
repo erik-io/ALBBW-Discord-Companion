@@ -3,8 +3,6 @@ import logging
 from discord.ext import tasks, commands
 from dotenv import load_dotenv
 
-#need to test with a push
-
 from Bot_Functions.Vegans import *
 from Bot_Functions.check_mail import *
 from Bot_Functions.log import setup_logging
@@ -29,6 +27,15 @@ intents.guilds = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 logging.debug("Bot instance created")
 
+bot.command(name='test')
+
+
+async def test(ctx):
+    """
+    This function sends a test message when the 'test' command is used.
+    """
+    await ctx.send("Test erfolgreich!")
+
 
 @bot.command(name='befehle')
 async def befehle(ctx):
@@ -45,7 +52,7 @@ async def vorschlag(ctx):
     """
     This function sends a message with command suggestions when the 'vorschläge' command is used.
     """
-    admin_ids = [630453809428299777, 224856290545893376]    # (for open source: remove our IDs and replace with yours)
+    admin_ids = [630453809428299777, 224856290545893376]  # (for open source: remove our IDs and replace with yours)
     for admin_id in admin_ids:
         admin = await bot.fetch_user(admin_id)
         if admin:
