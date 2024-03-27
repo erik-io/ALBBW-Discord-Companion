@@ -32,7 +32,9 @@ Bei den Features haben wir auf das Projekt bezogen. Die Funktionen sind:
 - !essen: Teilt den aktuellen Speiseplan mit, inklusive einer Angabe zu veganen Mahlzeiten.
 - !vegan: Informiert über die Anzahl veganer Mahlzeiten in der aktuellen Woche.
 - !feedback: Ermöglicht das Senden von Feedback an die Admins.
-- !kaffee, !öffnungszeiten, !getränke: Senden Informationen zu Kaffeespezialitäten, Öffnungszeiten und Getränkeoptionen.
+- !kaffee: Sendet Informationen zu Kaffeespezialitäten.
+- !öffnungszeiten: Sendet die Öffnungszeiten der Cafeteria.
+- !getränke: Getränkeoptionen
 
 
 ## Authors
