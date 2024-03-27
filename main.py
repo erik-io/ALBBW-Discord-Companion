@@ -184,7 +184,7 @@ async def check_new_mails():
     This function checks for new emails every 1440 minutes (24 hours). If there are new emails, it sends a message to
     a specific channel with the number of vegan meals for the next week and a preview image.
     """
-    channel = bot.get_channel(1200385984337027124)  # (for open source: replace with your channel ID)
+    channel = bot.get_channel(1160946863797719160)  # (for open source: replace with your channel ID)
     if check_mail(current_kw + 1):
         file_path = f"vorschau_{current_kw + 1}.png"
         file = discord.File(file_path)

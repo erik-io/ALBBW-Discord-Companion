@@ -31,7 +31,7 @@ def check_mail(current_kw):
         # Get the current week number
         # current_kw = datetime.date.today().isocalendar()[1]
         # Check if the email has already been processed
-        if mail_already_processed(f"Fwd: Speisenplan KW {current_kw}"):
+        if mail_already_processed(f"WG: Speisenplan KW {current_kw}"):
             print("E-Mail bereits verarbeitet, überspringe...")
             return False
 
