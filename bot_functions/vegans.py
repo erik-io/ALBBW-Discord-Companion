@@ -10,7 +10,7 @@ def vegan_meals(current_kw):
     """
         Counts the number of vegan meals in the current week's menu.
     """
-    open_file = open(f'Speiseplan_{current_kw}.pdf', "rb")
+    open_file = open(f'Speiseplan_KW_{current_kw}.pdf', "rb")
     pdf = PyPDF2.PdfReader(open_file)
 
     veg_count = 0
