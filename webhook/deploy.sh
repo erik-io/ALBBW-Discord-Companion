@@ -16,4 +16,4 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Restart the bot
-pm2 start main.py --name pythonDiscordBot --interpreter=python3
+pm2 stahonDiscordBot --interpreter=python3
