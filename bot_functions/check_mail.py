@@ -63,7 +63,7 @@ def check_mail_for_week(week_kw):
                     pix.save(output)
                     doc.close()
                     #os.remove(filepath)
-
+                    mark_mail_as_processed(subject)
                     print(f"E-Mail verarbeitet und PDF-Vorschau für KW {week_kw} erstellt: {output}")
                     return True
 
@@ -116,11 +116,3 @@ def mark_mail_as_processed(subject):
     # Open the file and append the subject line
     with open(processed_mails, "a") as file:
         file.write(subject + "\n")
-
-
-def rename_file(file_path):
-    # Get the current week number
-    current_kw = datetime.date.today().isocalendar()[1]
-    # Rename the file
-    os.rename(file_path, f"Speiseplan_{current_kw}.pdf")
-    return f"Speiseplan_{current_kw}.pdf"
