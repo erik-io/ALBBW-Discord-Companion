@@ -3,10 +3,10 @@ import logging
 from discord.ext import tasks, commands
 from dotenv import load_dotenv
 
-from Bot_Functions.Vegans import *
-from Bot_Functions.check_mail import *
-from Bot_Functions.log import setup_logging
-from Bot_Functions.responses import *
+from bot_functions.vegans import *
+from bot_functions.check_mail import *
+from bot_functions.log import setup_logging
+from bot_functions.responses import *
 
 # Set up logging and load environment variables
 logging.debug("Environment variables loaded successfully")
