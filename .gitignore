@@ -124,3 +124,5 @@ vorschau.png
 bot.log
 qodana.yaml
 /webhook/webhook.log
+/.idea
+/venv
