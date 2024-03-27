@@ -195,7 +195,7 @@ async def check_new_mails():
         if check_mail_for_week(current_kw + i):
             file_path = f"vorschau_KW_{current_kw + i}.png"
             if os.path.exists(file_path):
-                channel = bot.get_channel(1200385984337027124)  # Ersetzen Sie dies durch Ihre tatsächliche Kanal-ID
+                channel = bot.get_channel(1160946863797719160)  # Ersetzen Sie dies durch Ihre tatsächliche Kanal-ID
                 num_vegan_meals = vegan_meals(current_kw + i)
                 if num_vegan_meals > 0:
                     file = discord.File(file_path)
