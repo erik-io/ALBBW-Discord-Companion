@@ -1,8 +1,9 @@
-import os
-import imaplib
-import email
-from email.header import decode_header
 import datetime
+import email
+import imaplib
+import os
+from email.header import decode_header
+
 import fitz
 
 # File to keep track of processed emails
@@ -16,7 +17,7 @@ def check_mail(current_kw):
     also marks the email as processed to avoid processing it again in the future.
     """
     # Email account details
-    email = os.getenv('EMAIL')
+    email_address = os.getenv('EMAIL')
     server = os.getenv('SERVER')
     password = os.getenv('PASSWORD')
 
@@ -24,14 +25,14 @@ def check_mail(current_kw):
     mail = imaplib.IMAP4_SSL(server)
     try:
         # Login to the email account
-        mail.login(email, password)
+        mail.login(email_address, password)
         # Select the inbox
         mail.select('inbox')
 
         # Get the current week number
         # current_kw = datetime.date.today().isocalendar()[1]
         # Check if the email has already been processed
-        if mail_already_processed(f"WG: Speisenplan KW {current_kw}"):
+        if mail_already_processed(f"Fwd: Speisenplan KW {current_kw}"):
             print("E-Mail bereits verarbeitet, überspringe...")
             return False
 
@@ -74,7 +75,7 @@ def check_mail(current_kw):
                     print(f"PDF-Vorschau gespeichert als {output}")
                     doc.close()
                     # Delete the PDF file
-                    os.remove(filepath)
+                    #os.remove(filepath)
                     # Mark the email as processed
                     mark_mail_as_processed(subject)
                     return True
@@ -108,6 +109,7 @@ def mark_mail_as_processed(subject):
     # Open the file and append the subject line
     with open(processed_mails, "a") as file:
         file.write(subject + "\n")
+
 
 def rename_file(file_path):
     # Get the current week number

@@ -197,6 +197,7 @@ def main():
     The main function of the bot. It checks for new emails and then runs the bot.
     """
     setup_logging()
+    check_mail(current_kw)
 
     # Run the bot
     try:
