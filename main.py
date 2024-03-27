@@ -164,7 +164,7 @@ async def on_ready():
     """
     Event listener that is called when the bot successfully connects to Discord.
     """
-    check_new_mails.start()
+    # check_new_mails.start()
     logging.info(f"Logged in as {bot.user}")
     server_count = len(bot.guilds)
     logging.info(f"Bot is ready to receive and process commands on {server_count} servers.")
