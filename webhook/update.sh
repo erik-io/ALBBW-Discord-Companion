@@ -9,6 +9,9 @@ pm2 stop pythonDiscordBot
 git reset --hard
 git pull origin main
 
+# Activate the virtual environment
+source venv/bin/activate
+
 # Install the latest dependencies
 pip install -r requirements.txt
 
