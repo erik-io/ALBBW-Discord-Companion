@@ -27,15 +27,6 @@ intents.guilds = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 logging.debug("Bot instance created")
 
-bot.command(name='test')
-
-
-async def test(ctx):
-    """
-    This function sends a test message when the 'test' command is used.
-    """
-    await ctx.send("Test erfolgreich!")
-
 
 @bot.command(name='befehle')
 async def befehle(ctx):
