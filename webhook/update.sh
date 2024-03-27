@@ -1,8 +1,16 @@
 #!/bin/bash
+# This script is used to update the bot from the main branch
 
-sudo systemctl stop pythonDiscordBot.service
+# Stop the bot
+cd /home/ubuntu/pythonDiscordBot || exit
+pm2 stop pythonDiscordBot
 
-cd /home/ubuntu/pythonDiscordBot
+# Pull the latest changes
+git reset --hard
 git pull origin main
 
-sudo systemctl start pythonDiscordBot.service
+# Install the latest dependencies
+pip install -r requirements.txt
+
+# Restart the bot
+pm2 start main.py --name pythonDiscordBot --interpreter=python3
