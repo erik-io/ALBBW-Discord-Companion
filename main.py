@@ -3,6 +3,8 @@ import logging
 from discord.ext import tasks, commands
 from dotenv import load_dotenv
 
+#need to test with a push
+
 from Bot_Functions.Vegans import *
 from Bot_Functions.check_mail import *
 from Bot_Functions.log import setup_logging
