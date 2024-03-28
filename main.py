@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 from bot_functions.vegans import *
 from bot_functions.check_mail import *
-from bot_functions.log import setup_logging
+from bot_functions.log import *
 from bot_functions.responses import *
 
 # Set up logging and load environment variables
@@ -26,6 +26,7 @@ intents.guilds = True
 # Create a bot instance
 bot = commands.Bot(command_prefix='!', intents=intents)
 logging.debug("Bot instance created")
+
 
 
 @bot.command(name='befehle')
@@ -199,19 +200,17 @@ async def check_new_mails():
                 num_vegan_meals = vegan_meals(current_kw + i)
                 if num_vegan_meals > 0:
                     file = discord.File(file_path)
-                    await channel.send(f"In KW {current_kw + i} gibt es {num_vegan_meals} vegane Mahlzeiten.\nHier ist die Vorschau:", file=file)
+                    await channel.send(
+                        f"In KW {current_kw + i} gibt es {num_vegan_meals} vegane Mahlzeiten.\nHier ist die Vorschau:",
+                        file=file)
                 else:
                     await channel.send(f"In KW {current_kw + i} gibt es keine veganen Mahlzeiten.")
-
-
-
 
 
 def main():
     """
     The main function of the bot. It checks for new emails and then runs the bot.
     """
-    setup_logging()
     check_mail_current_week()
 
     # Run the bot
@@ -227,7 +226,6 @@ try:
     logging.info("Loading environment variables from .env file")
     load_dotenv()
     DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
-
 
     # Check if the Discord token is set
     if DISCORD_TOKEN is None:
