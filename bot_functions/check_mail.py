@@ -62,7 +62,7 @@ def check_mail_for_week(week_kw):
                     output = f"vorschau_KW_{week_kw}.png"
                     pix.save(output)
                     doc.close()
-                    #os.remove(filepath)
+                    # os.remove(filepath)
                     mark_mail_as_processed(subject)
                     print(f"E-Mail verarbeitet und PDF-Vorschau für KW {week_kw} erstellt: {output}")
                     return True

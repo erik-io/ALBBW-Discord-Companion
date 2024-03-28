@@ -1,5 +1,6 @@
 import discord
 
+
 def befehlsliste():
     """
     This function returns a formatted string containing the coffee specialties and their prices.
@@ -15,6 +16,7 @@ def befehlsliste():
             f'!snacks           Zeigt das Snackangebot\n'
             f'!öffnungszeiten   Zeigt die Öffnungszeiten der Cafeteria\n'
             f'!vorschlag        Sende uns einen Wunsch, den du hast, für unseren Bot.```\n')
+
 
 # noinspection SpellCheckingInspection
 def oeffnungszeiten_info():
@@ -136,4 +138,3 @@ async def ping_role(role_name, message, bot):
     role = discord.utils.get(channel.guild.roles, name=role_name)
     if channel and role:
         await channel.send(f"<@&{role.id}> {message}")
-
