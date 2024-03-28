@@ -28,7 +28,6 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 logging.debug("Bot instance created")
 
 
-
 @bot.command(name='befehle')
 async def befehle(ctx):
     """
