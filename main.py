@@ -90,6 +90,7 @@ async def essen(ctx):
     """
     This function sends the meal plan when the 'essen' command is used.
     """
+    check_mail_current_week()
     file_path = f"vorschau_KW_{current_kw}.png"
     if os.path.exists(file_path):
         if vegan_meals(current_kw) == 0:
