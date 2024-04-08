@@ -4,3 +4,4 @@ PyPDF2~=3.0.1
 discord.py~=2.3.2
 Flask~=3.0.2
 configparser~=6.0.1
+requests
