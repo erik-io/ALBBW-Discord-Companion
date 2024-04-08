@@ -23,7 +23,7 @@ intents.message_content = True
 intents.guilds = True
 
 # Create a bot instance
-bot = bot_commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(command_prefix='!', intents=intents)
 logging.debug("Bot instance created")
 
 
