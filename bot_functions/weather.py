@@ -42,3 +42,8 @@ async def weather(ctx):
                        f"Die Wetterbeschreibung lautet: {description}.")
     else:
         await ctx.send("Etwas ist schiefgelaufen.")
+
+
+def weather_setup(bot):
+    bot.add_command(weather)
+    logging.info("Weather command added to bot")
