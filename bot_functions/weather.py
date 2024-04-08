@@ -17,7 +17,7 @@ def weather_setup(bot):
         """
         This function sends the current weather in a given city when the 'wetter' command is used.
         """
-        await ctx.message.delete
+        await ctx.message.delete()
         logging.info(f"Received weather request from {ctx.author.name}")
         lat = "52.4429081"
         lon = "13.4424778"
