@@ -240,17 +240,12 @@ try:
     logging.info("Loading environment variables from .env file")
     load_dotenv()
     DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
-    OPENWEATHERMAP_API_KEY = os.getenv('OPENWEATHERMAP_API_KEY')
 
     # Check if the Discord token is set
     if DISCORD_TOKEN is None:
         raise ValueError("DISCORD_TOKEN is not set")
     else:
         logging.info("DISCORD_TOKEN is set")
-    if OPENWEATHERMAP_API_KEY is None:
-        raise ValueError("OPENWEATHERMAP_API_KEY is not set")
-    else:
-        logging.info("OPENWEATHERMAP_API_KEY is set")
 except ValueError as e:
     logging.error(e)  # Log the error message
     exit(1)  # Exit the program with a status code of 1
