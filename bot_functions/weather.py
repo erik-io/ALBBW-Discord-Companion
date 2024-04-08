@@ -19,10 +19,12 @@ async def weather(ctx):
     logging.info(f"Received weather request from {ctx.author.name}")
     api_key = os.getenv('OPENWEATHERMAP_API_KEY')
     logging.info(f"Loaded OpenWeatherMap API key")
-    city = "Berlin"
+    lat = "52.4429081"
+    lon = "13.4424778"
+    # Coordinates for Annedore-Leber-Berufsbildungswerk
     logging.info(f"Requesting weather data for {city}")
     base_url = "http://api.openweathermap.org/data/2.5/weather?"
-    complete_url = f"{base_url}q={city}&appid={api_key}&units=metric&lang=de"
+    complete_url = f"{base_url}&lat={lat}&lon={lon}&appid={api_key}&units=metric&lang=de"
 
     response = requests.get(complete_url)
     logging.info(f"Received response from OpenWeatherMap API")
