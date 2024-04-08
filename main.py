@@ -219,6 +219,7 @@ async def check_new_mails():
                 else:
                     await channel.send(f"In KW {current_kw + i} gibt es keine veganen Mahlzeiten.")
 
+bot.add_command(weather)
 
 def main():
     """
@@ -250,7 +251,6 @@ try:
         raise ValueError("OPENWEATHERMAP_API_KEY is not set")
     else:
         logging.info("OPENWEATHERMAP_API_KEY is set")
-        bot.add_command(weather)
 except ValueError as e:
     logging.error(e)  # Log the error message
     exit(1)  # Exit the program with a status code of 1
