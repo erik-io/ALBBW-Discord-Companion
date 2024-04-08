@@ -3,7 +3,6 @@ This module contains the weather command for the bot. - WIP
 To be implemented in the future.
 
 ToDos:
-- Add OPENWEATHERMAP_API_KEY to .env file
 - Add weather command to main.py
 - Add weather to !essen command in main.py
 - Add weekly forcast to task_loop in main.py
