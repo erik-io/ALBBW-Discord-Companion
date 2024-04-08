@@ -1,7 +1,7 @@
 from discord.ext import tasks, commands
 from dotenv import load_dotenv
 
-from bot_functions import weather
+from bot_functions.weather import *
 from bot_functions.check_mail import *
 from bot_functions.log import *
 from bot_functions.responses import *
@@ -219,8 +219,7 @@ async def check_new_mails():
                 else:
                     await channel.send(f"In KW {current_kw + i} gibt es keine veganen Mahlzeiten.")
 
-weather_command = commands.Command(weather, name='wetter')
-bot.add_command(weather_command)
+weather_setup(bot)
 
 def main():
     """
