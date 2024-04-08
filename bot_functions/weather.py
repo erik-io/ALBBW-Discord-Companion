@@ -11,7 +11,6 @@ ToDos:
 import requests
 import logging
 from discord.ext import commands
-@bot.command(name='wetter')
 async def weather(ctx):
     """
     This function sends the current weather in a given city when the 'wetter' command is used.
