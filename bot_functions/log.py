@@ -1,7 +1,6 @@
-from logging.handlers import RotatingFileHandler
 import configparser
 import logging
-
+from logging.handlers import RotatingFileHandler
 
 # Initialize logging
 

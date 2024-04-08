@@ -1,12 +1,11 @@
-import logging
-
 from discord.ext import tasks, commands
 from dotenv import load_dotenv
 
-from bot_functions.vegans import *
+from bot_functions import weather
 from bot_functions.check_mail import *
 from bot_functions.log import *
 from bot_functions.responses import *
+from bot_functions.vegans import *
 
 # Set up logging and load environment variables
 logging.debug("Environment variables loaded successfully")
@@ -24,7 +23,7 @@ intents.message_content = True
 intents.guilds = True
 
 # Create a bot instance
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = bot_commands.Bot(command_prefix='!', intents=intents)
 logging.debug("Bot instance created")
 
 
@@ -35,7 +34,7 @@ async def befehle(ctx):
     """
     await ctx.message.delete()
     logging.info("Befehl wurde von %s ausgeführt", ctx.author)
-    await ctx.send(befehlsliste())
+    await ctx.send(bot_commands())
 
 
 @bot.command(name='vorschlag')
@@ -129,7 +128,7 @@ async def snacks(ctx):
     This function sends the snack menu when the 'snacks' command is used.
     """
     await ctx.message.delete()
-    await ctx.send(snacks_info())
+    await ctx.send(snack_prices())
 
 @bot.command(name='feedback')
 async def feedback(ctx, *, message: str):
@@ -154,7 +153,7 @@ async def kaffee(ctx):
     This function sends the coffee menu when the 'kaffee' command is used.
     """
     await ctx.message.delete()
-    await ctx.send(kaffeespezialitaeten())
+    await ctx.send(coffee_prices())
 
 
 @bot.command(name='öffnungszeiten')
@@ -163,7 +162,7 @@ async def oeffnungszeiten(ctx):
     This function sends the opening hours when the 'öffnungszeiten' command is used.
     """
     await ctx.message.delete()
-    await ctx.send(oeffnungszeiten_info())
+    await ctx.send(cafeteria_hours())
 
 
 @bot.command(name='getränke')
@@ -172,8 +171,7 @@ async def getraenke(ctx):
     This function sends the drinks menu when the 'getränke' command is used.
     """
     await ctx.message.delete()
-    await ctx.send(getraenke_info())
-
+    await ctx.send(beverage_prices())
 
 @bot.event
 async def on_ready():
@@ -241,15 +239,22 @@ try:
     logging.info("Loading environment variables from .env file")
     load_dotenv()
     DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
+    OPENWEATHERMAP_API_KEY = os.getenv('OPENWEATHERMAP_API_KEY')
 
     # Check if the Discord token is set
     if DISCORD_TOKEN is None:
         raise ValueError("DISCORD_TOKEN is not set")
     else:
         logging.info("DISCORD_TOKEN is set")
+    if OPENWEATHERMAP_API_KEY is None:
+        raise ValueError("OPENWEATHERMAP_API_KEY is not set")
+    else:
+        logging.info("OPENWEATHERMAP_API_KEY is set")
+        bot.add_command(weather)
 except ValueError as e:
     logging.error(e)  # Log the error message
     exit(1)  # Exit the program with a status code of 1
+
 
 if __name__ == "__main__":
     main()

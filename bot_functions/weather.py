@@ -9,7 +9,8 @@ ToDos:
 - Add weekly forcast to task_loop in main.py
 """
 import requests
-
+import logging
+from discord.ext import commands
 @bot.command(name='wetter')
 async def weather(ctx):
     """
@@ -17,17 +18,15 @@ async def weather(ctx):
     """
     await ctx.message.delete
     logging.info(f"Received weather request from {ctx.author.name}")
-    api_key = os.getenv('OPENWEATHERMAP_API_KEY')
-    logging.info(f"Loaded OpenWeatherMap API key")
     lat = "52.4429081"
     lon = "13.4424778"
-    # Coordinates for Annedore-Leber-Berufsbildungswerk
-    logging.info(f"Requesting weather data for {city}")
+    # Coordinates for Annedore-Leber-Berufsbildungswerk/Berlin-Gropiusstadt
+    logging.info(f"Requesting weather data for {lat}, {lon}")
     base_url = "http://api.openweathermap.org/data/2.5/weather?"
-    complete_url = f"{base_url}&lat={lat}&lon={lon}&appid={api_key}&units=metric&lang=de"
+    complete_url = f"{base_url}&lat={lat}&lon={lon}&appid={OPENWEATHERMAP_API_KEY}&units=metric&lang=de"
 
-    response = requests.get(complete_url)
     logging.info(f"Received response from OpenWeatherMap API")
+    response = requests.get(complete_url)
     weather_data = response.json()
 
     logging.debug(f"Response: {weather_data}")
@@ -40,8 +39,7 @@ async def weather(ctx):
         feels_like = main["feels_like"]
         description = weather[0]["description"]
 
-        await ctx.send(f"Die aktuelle Temperatur in {city} beträgt {temperature}°C. Es fühlt sich an wie {feels_like}°C. "
+        await ctx.send(f"Die aktuelle Temperatur beträgt {temperature}°C. Es fühlt sich an wie {feels_like}°C. "
                        f"Die Wetterbeschreibung lautet: {description}.")
     else:
         await ctx.send("Etwas ist schiefgelaufen.")
-
