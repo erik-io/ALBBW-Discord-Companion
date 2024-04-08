@@ -10,10 +10,12 @@ ToDos:
 import requests
 import logging
 from discord.ext import commands
+from dotenv import load_dotenv
 import os
 
 
 def weather_setup(bot):
+    load_dotenv()
     OPENWEATHERMAP_API_KEY = os.getenv("OPENWEATHERMAP_API_KEY")
 
     if OPENWEATHERMAP_API_KEY is None:
