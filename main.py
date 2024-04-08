@@ -33,6 +33,7 @@ async def befehle(ctx):
     """
     This function sends a list of available commands when the 'befehle' command is used.
     """
+    await ctx.message.delete()
     logging.info("Befehl wurde von %s ausgeführt", ctx.author)
     await ctx.send(befehlsliste())
 
@@ -42,6 +43,7 @@ async def vorschlag(ctx):
     """
     This function sends a message with command suggestions when the 'vorschläge' command is used.
     """
+    await ctx.message.delete()
     admin_ids = [630453809428299777, 224856290545893376]  # (for open source: remove our IDs and replace with yours)
     for admin_id in admin_ids:
         admin = await bot.fetch_user(admin_id)
@@ -81,6 +83,7 @@ async def info(ctx):
     """
     This function sends cafeteria information when the 'info' command is used.
     """
+    await ctx.message.delete()
     await ctx.send(cafeteria_info())
 
 
@@ -89,6 +92,7 @@ async def essen(ctx):
     """
     This function sends the meal plan when the 'essen' command is used.
     """
+    await ctx.message.delete()
     check_mail_current_week()
     file_path = f"vorschau_KW_{current_kw}.png"
     if os.path.exists(file_path):
@@ -115,6 +119,7 @@ async def vegan(ctx):
     """
     This function sends the number of vegan meals for the current week when the 'vegan' command is used.
     """
+    await ctx.message.delete()
     await ctx.send(f"In dieser Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.")
 
 
@@ -148,6 +153,7 @@ async def kaffee(ctx):
     """
     This function sends the coffee menu when the 'kaffee' command is used.
     """
+    await ctx.message.delete()
     await ctx.send(kaffeespezialitaeten())
 
 
@@ -156,6 +162,7 @@ async def oeffnungszeiten(ctx):
     """
     This function sends the opening hours when the 'öffnungszeiten' command is used.
     """
+    await ctx.message.delete()
     await ctx.send(oeffnungszeiten_info())
 
 
@@ -164,6 +171,7 @@ async def getraenke(ctx):
     """
     This function sends the drinks menu when the 'getränke' command is used.
     """
+    await ctx.message.delete()
     await ctx.send(getraenke_info())
 
 
