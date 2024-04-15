@@ -116,11 +116,14 @@ def mark_mail_as_processed(subject):
     # if file doesn't exist, create it
     if not os.path.exists(processed_mails):
         with open(processed_mails, "w"):
-            pass
-    # Open the file and append the subject line
+            pass  # Just creating the file if it doesn't exist
+
+    # Open the file and check if the subject line already exists, then append if it doesn't
     with open(processed_mails, "r+") as file:
-        # check if line already exists
         lines = file.readlines()
-        if subject in lines:
-            return
+        # Ensure we compare with the newline character
+        if (subject + "\n") in lines:
+            return  # Subject already processed, do nothing
+
+        # Move to the end of the file to append the new subject
         file.write(subject + "\n")
