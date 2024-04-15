@@ -10,11 +10,6 @@ from bot_functions.vegans import *
 # Set up logging and load environment variables
 logging.debug("Environment variables loaded successfully")
 
-# Get the current week number
-logging.debug("Getting current date and week number")
-current_kw = datetime.date.today().isocalendar()[1]
-logging.debug(f"Current week number: {current_kw}")
-
 # Set up intents for the bot
 logging.debug("Setting up intents")
 intents = discord.Intents.default()
@@ -92,6 +87,11 @@ async def essen(ctx):
     This function sends the meal plan when the 'essen' command is used.
     """
     await ctx.message.delete()
+    # Get the current week number
+    logging.debug("Getting current date and week number")
+    current_kw = datetime.date.today().isocalendar()[1] # Moved this line here, to ensure that the week is
+    # always-up-to-date when the command is called
+    logging.debug(f"Current week number: {current_kw}")
     check_mail_current_week()
     file_path = f"vorschau_KW_{current_kw}.png"
     if os.path.exists(file_path):
@@ -104,7 +104,7 @@ async def essen(ctx):
                 file = discord.File(file_path)
                 await ctx.send(
                     ping_role("Veganer", f"Diese Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.\n"
-                                         f"Hier ist die vorschau:", bot), file=file)
+                                         f"Hier ist die Vorschau:", bot), file=file)
                 save_last_ping_date()
             else:
                 file = discord.File(file_path)
