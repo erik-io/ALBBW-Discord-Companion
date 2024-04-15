@@ -114,7 +114,7 @@ def mark_mail_as_processed(subject):
     It does this by appending the subject line to the file of processed emails.
     """
     # Open the file and append the subject line
-    with open(processed_mails, "a") as file:
+    with open(processed_mails, "r+") as file:
         lines = file.readlines()
         if subject not in lines:
             file.write(subject + "\n")
