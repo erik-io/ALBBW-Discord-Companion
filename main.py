@@ -21,11 +21,13 @@ intents.guilds = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 logging.debug("Bot instance created")
 
+
 def get_current_kw():
     """
     This function gets the current week number.
     """
     return datetime.date.today().isocalendar()[1]
+
 
 @bot.command(name='befehle')
 async def befehle(ctx):
@@ -134,6 +136,7 @@ async def snacks(ctx):
     await ctx.message.delete()
     await ctx.send(snack_prices())
 
+
 @bot.command(name='feedback')
 async def feedback(ctx, *, message: str):
     """
@@ -176,6 +179,7 @@ async def getraenke(ctx):
     """
     await ctx.message.delete()
     await ctx.send(beverage_prices())
+
 
 @bot.event
 async def on_ready():
@@ -223,12 +227,15 @@ async def check_new_mails():
                 else:
                     await channel.send(f"In KW {current_kw + i} gibt es keine veganen Mahlzeiten.")
 
+
 weather_setup(bot)
+
 
 def main():
     """
     The main function of the bot. It checks for new emails and then runs the bot.
     """
+    check_new_mails.start()
     check_mail_current_week()
 
     # Run the bot
@@ -253,7 +260,6 @@ try:
 except ValueError as e:
     logging.error(e)  # Log the error message
     exit(1)  # Exit the program with a status code of 1
-
 
 if __name__ == "__main__":
     main()
