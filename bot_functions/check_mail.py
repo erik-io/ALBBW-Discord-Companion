@@ -113,6 +113,10 @@ def mark_mail_as_processed(subject):
     This function marks an email with the given subject line as processed.
     It does this by appending the subject line to the file of processed emails.
     """
+    # if file doesn't exist, create it
+    if not os.path.exists(processed_mails):
+        with open(processed_mails, "w"):
+            pass
     # Open the file and append the subject line
     with open(processed_mails, "r+") as file:
         # check if line already exists
