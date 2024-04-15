@@ -21,6 +21,11 @@ intents.guilds = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 logging.debug("Bot instance created")
 
+def get_current_kw():
+    """
+    This function gets the current week number.
+    """
+    return datetime.date.today().isocalendar()[1]
 
 @bot.command(name='befehle')
 async def befehle(ctx):
@@ -89,13 +94,12 @@ async def essen(ctx):
     await ctx.message.delete()
     # Get the current week number
     logging.debug("Getting current date and week number")
-    current_kw = datetime.date.today().isocalendar()[1] # Moved this line here, to ensure that the week is
     # always-up-to-date when the command is called
-    logging.debug(f"Current week number: {current_kw}")
+    logging.debug(f"Current week number: {get_current_kw()}")
     check_mail_current_week()
-    file_path = f"vorschau_KW_{current_kw}.png"
+    file_path = f"vorschau_KW_{get_current_kw()}.png"
     if os.path.exists(file_path):
-        if vegan_meals(current_kw) == 0:
+        if vegan_meals(get_current_kw()) == 0:
             file = discord.File(file_path)
             await ctx.send(f"Hier ist die Vorschau:",
                            file=file)
@@ -103,7 +107,7 @@ async def essen(ctx):
             if can_ping_vegans():
                 file = discord.File(file_path)
                 await ctx.send(
-                    ping_role("Veganer", f"Diese Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.\n"
+                    ping_role("Veganer", f"Diese Woche gibt es {vegan_meals(get_current_kw())} vegane Mahlzeiten.\n"
                                          f"Hier ist die Vorschau:", bot), file=file)
                 save_last_ping_date()
             else:
@@ -119,7 +123,7 @@ async def vegan(ctx):
     This function sends the number of vegan meals for the current week when the 'vegan' command is used.
     """
     await ctx.message.delete()
-    await ctx.send(f"In dieser Woche gibt es {vegan_meals(current_kw)} vegane Mahlzeiten.")
+    await ctx.send(f"In dieser Woche gibt es {vegan_meals(get_current_kw())} vegane Mahlzeiten.")
 
 
 @bot.command(name='snacks')
