@@ -22,38 +22,6 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 logging.debug("Bot instance created")
 
 
-def get_current_kw():
-    """
-    This function gets the current week number.
-    """
-    return datetime.date.today().isocalendar()[1]
-
-
-@bot.command(name='befehle')
-async def befehle(ctx):
-    """
-    This function sends a list of available commands when the 'befehle' command is used.
-    """
-    await ctx.message.delete()
-    logging.info("Befehl wurde von %s ausgeführt", ctx.author)
-    await ctx.send(bot_commands())
-
-
-@bot.command(name='vorschlag')
-async def vorschlag(ctx):
-    """
-    This function sends a message with command suggestions when the 'vorschläge' command is used.
-    """
-    await ctx.message.delete()
-    admin_ids = [630453809428299777, 224856290545893376]  # (for open source: remove our IDs and replace with yours)
-    for admin_id in admin_ids:
-        admin = await bot.fetch_user(admin_id)
-        if admin:
-            await admin.send(f"{ctx.author} wünscht sich eine Funktion für den Bot.: "
-                             f"{ctx.message.content.replace('!vorschlag ', '')}\n")
-    await ctx.send("Dein Vorschlag wurde an die Admins gesendet. Vielen Dank!", delete_after=5)
-
-
 @bot.command(name='bclear')
 async def bclear(ctx):
     """
@@ -67,6 +35,16 @@ async def bclear(ctx):
         await ctx.send("Du hast nicht die Berechtigung, diesen Befehl auszuführen.")
 
 
+@bot.command(name='befehle')
+async def befehle(ctx):
+    """
+    This function sends a list of available commands when the 'befehle' command is used.
+    """
+    await ctx.message.delete()
+    logging.info("Befehl wurde von %s ausgeführt", ctx.author)
+    await ctx.send(bot_commands())
+
+
 @bot.command(name='clear')
 async def clear(ctx):
     """
@@ -77,15 +55,6 @@ async def clear(ctx):
         await ctx.send("Chat wurde gelöscht.", delete_after=5)
     else:
         await ctx.send("Du hast nicht die Berechtigung, diesen Befehl auszuführen.")
-
-
-@bot.command(name='info')
-async def info(ctx):
-    """
-    This function sends cafeteria information when the 'info' command is used.
-    """
-    await ctx.message.delete()
-    await ctx.send(cafeteria_info())
 
 
 @bot.command(name='essen')
@@ -106,8 +75,7 @@ async def essen(ctx):
         if os.path.exists(file_path):
             if vegan_meals(get_current_kw()) == 0:
                 file = discord.File(file_path)
-                await ctx.send(f"Hier ist die Vorschau:",
-                               file=file)
+                await ctx.send(f"Hier ist die Vorschau:", file=file)
             else:
                 if can_ping_vegans():
                     file = discord.File(file_path)
@@ -121,24 +89,6 @@ async def essen(ctx):
             mark_mail_as_processed(f"WG: Speisenplan KW {current_kw}")
         else:
             await ctx.send("Es gibt keine Vorschau für diese Woche.")
-
-
-@bot.command(name='vegan')
-async def vegan(ctx):
-    """
-    This function sends the number of vegan meals for the current week when the 'vegan' command is used.
-    """
-    await ctx.message.delete()
-    await ctx.send(f"In dieser Woche gibt es {vegan_meals(get_current_kw())} vegane Mahlzeiten.")
-
-
-@bot.command(name='snacks')
-async def snacks(ctx):
-    """
-    This function sends the snack menu when the 'snacks' command is used.
-    """
-    await ctx.message.delete()
-    await ctx.send(snack_prices())
 
 
 @bot.command(name='feedback')
@@ -156,6 +106,24 @@ async def feedback(ctx, *, message: str):
             await admin.send(f"{message}")
     # Sende die Bestätigungsnachricht als Direktnachricht an den Nutzer
     await ctx.send("Dein Feedback wurde an die Admins gesendet. Vielen Dank!", delete_after=5)
+
+
+@bot.command(name='getränke')
+async def getraenke(ctx):
+    """
+    This function sends the drinks menu when the 'getränke' command is used.
+    """
+    await ctx.message.delete()
+    await ctx.send(beverage_prices())
+
+
+@bot.command(name='info')
+async def info(ctx):
+    """
+    This function sends cafeteria information when the 'info' command is used.
+    """
+    await ctx.message.delete()
+    await ctx.send(cafeteria_info())
 
 
 @bot.command(name='kaffee')
@@ -176,13 +144,38 @@ async def oeffnungszeiten(ctx):
     await ctx.send(cafeteria_hours())
 
 
-@bot.command(name='getränke')
-async def getraenke(ctx):
+@bot.command(name='snacks')
+async def snacks(ctx):
     """
-    This function sends the drinks menu when the 'getränke' command is used.
+    This function sends the snack menu when the 'snacks' command is used.
     """
     await ctx.message.delete()
-    await ctx.send(beverage_prices())
+    await ctx.send(snack_prices())
+
+
+@bot.command(name='vorschlag')
+async def vorschlag(ctx):
+    """
+    This function sends a message with command suggestions when the 'vorschläge' command is used.
+    """
+    await ctx.message.delete()
+    admin_ids = [630453809428299777, 224856290545893376]  # (for open source: remove our IDs and replace with yours)
+    for admin_id in admin_ids:
+        admin = await bot.fetch_user(admin_id)
+        if admin:
+            await admin.send(f"{ctx.author} wünscht sich eine Funktion für den Bot.: "
+                             f"{ctx.message.content.replace('!vorschlag ', '')}\n")
+    await ctx.send("Dein Vorschlag wurde an die Admins gesendet. Vielen Dank!", delete_after=5)
+
+
+@bot.command(name='vegan')
+async def vegan(ctx):
+    """
+    This function sends the number of vegan meals for the current week when the 'vegan' command is used.
+    """
+    await ctx.message.delete()
+    await ctx.send(f"In dieser Woche gibt es {vegan_meals(get_current_kw())} vegane Mahlzeiten.")
+
 
 @bot.command(name='wetter')
 async def weather_api(ctx):
@@ -206,10 +199,10 @@ async def weather_api(ctx):
     logging.info(f"Sending weather data to {ctx.author.name}")
 
     if weather_data["cod"] != "404":
-        main = weather_data["main"]
+        main_data = weather_data["main"]
         weather = weather_data["weather"]
-        temperature = main["temp"]
-        feels_like = main["feels_like"]
+        temperature = main_data["temp"]
+        feels_like = main_data["feels_like"]
         description = weather[0]["description"]
 
         await ctx.send(f"Die aktuelle Temperatur beträgt {temperature}°C. Es fühlt sich an wie {feels_like}°C. "
@@ -267,6 +260,13 @@ async def check_new_mails():
                 else:
                     await channel.send(f"In KW {current_kw + i} gibt es keine veganen Mahlzeiten.")
                     mark_mail_as_processed(file_path)
+
+
+def get_current_kw():
+    """
+    This function gets the current week number.
+    """
+    return datetime.date.today().isocalendar()[1]
 
 
 def main():
