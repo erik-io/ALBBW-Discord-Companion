@@ -218,6 +218,9 @@ async def check_new_mails():
 
     # Überprüft die Mails für die nächsten 3 Wochen
     for i in range(1, 4):
+        if mail_already_processed(current_kw + i):
+            return
+
         if check_mail_for_week(current_kw + i):
             file_path = f"vorschau_KW_{current_kw + i}.png"
             if os.path.exists(file_path):
