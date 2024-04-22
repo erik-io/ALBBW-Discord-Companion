@@ -94,29 +94,31 @@ async def essen(ctx):
     This function sends the meal plan when the 'essen' command is used.
     """
     await ctx.message.delete()
+    current_kw = datetime.date.today().isocalendar()[1]
     # Get the current week number
     logging.debug("Getting current date and week number")
     # always-up-to-date when the command is called
     logging.debug(f"Current week number: {get_current_kw()}")
-    check_mail_current_week()
-    file_path = f"vorschau_KW_{get_current_kw()}.png"
-    if os.path.exists(file_path):
-        if vegan_meals(get_current_kw()) == 0:
-            file = discord.File(file_path)
-            await ctx.send(f"Hier ist die Vorschau:",
-                           file=file)
-        else:
-            if can_ping_vegans():
+    if not mail_already_processed(f"WG: Speisenplan KW {current_kw}"):
+        check_mail_current_week()
+        file_path = f"vorschau_KW_{get_current_kw()}.png"
+        if os.path.exists(file_path):
+            if vegan_meals(get_current_kw()) == 0:
                 file = discord.File(file_path)
-                await ctx.send(
-                    ping_role("Veganer", f"Diese Woche gibt es {vegan_meals(get_current_kw())} vegane Mahlzeiten.\n"
-                                         f"Hier ist die Vorschau:", bot), file=file)
-                save_last_ping_date()
+                await ctx.send(f"Hier ist die Vorschau:",
+                               file=file)
             else:
-                file = discord.File(file_path)
-                await ctx.send(f"Hier ist die Vorschau:", file=file)
-    else:
-        await ctx.send("Es gibt keine Vorschau für diese Woche.")
+                if can_ping_vegans():
+                    file = discord.File(file_path)
+                    await ctx.send(
+                        ping_role("Veganer", f"Diese Woche gibt es {vegan_meals(get_current_kw())} vegane Mahlzeiten.\n"
+                                             f"Hier ist die Vorschau:", bot), file=file)
+                    save_last_ping_date()
+                else:
+                    file = discord.File(file_path)
+                    await ctx.send(f"Hier ist die Vorschau:", file=file)
+        else:
+            await ctx.send("Es gibt keine Vorschau für diese Woche.")
 
 
 @bot.command(name='vegan')
@@ -214,19 +216,20 @@ async def check_new_mails():
 
     # Überprüft die Mails für die nächsten 3 Wochen
     for i in range(1, 4):
-        if check_mail_for_week(current_kw + i):
-            file_path = f"vorschau_KW_{current_kw + i}.png"
-            if os.path.exists(file_path):
-                channel = bot.get_channel(1160946863797719160)  # Ersetzen Sie dies durch Ihre tatsächliche Kanal-ID
-                num_vegan_meals = vegan_meals(current_kw + i)
-                if num_vegan_meals > 0:
-                    file = discord.File(file_path)
-                    await channel.send(
-                        f"In KW {current_kw + i} gibt es {num_vegan_meals} vegane Mahlzeiten.\nHier ist die Vorschau:",
-                        file=file)
-                else:
-                    await channel.send(f"In KW {current_kw + i} gibt es keine veganen Mahlzeiten.")
-
+        if not mail_already_processed(f"WG: Speisenplan KW {current_kw + i}"):
+            if check_mail_for_week(current_kw + i):
+                file_path = f"vorschau_KW_{current_kw + i}.png"
+                if os.path.exists(file_path):
+                    channel = bot.get_channel(1160946863797719160)  # Ersetzen Sie dies durch Ihre tatsächliche Kanal-ID
+                    num_vegan_meals = vegan_meals(current_kw + i)
+                    if num_vegan_meals > 0:
+                        file = discord.File(file_path)
+                        await channel.send(
+                            f"In KW {current_kw + i} gibt es {num_vegan_meals} vegane Mahlzeiten.\nHier ist die Vorschau:",
+                            file=file)
+                        mark_mail_as_processed(file_path)
+                    else:
+                        await channel.send(f"In KW {current_kw + i} gibt es keine veganen Mahlzeiten.")
 
 weather_setup(bot)
 
