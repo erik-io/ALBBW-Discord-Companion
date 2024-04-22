@@ -1,7 +1,7 @@
+import requests
 from discord.ext import tasks, commands
 from dotenv import load_dotenv
 
-from bot_functions.weather import *
 from bot_functions.check_mail import *
 from bot_functions.log import *
 from bot_functions.responses import *
@@ -94,7 +94,7 @@ async def essen(ctx):
     This function sends the meal plan when the 'essen' command is used.
     """
     await ctx.message.delete()
-    current_kw = datetime.date.today().isocalendar()[1]
+    current_kw = get_current_kw()
     # Get the current week number
     logging.debug("Getting current date and week number")
     # always-up-to-date when the command is called
@@ -184,6 +184,39 @@ async def getraenke(ctx):
     await ctx.message.delete()
     await ctx.send(beverage_prices())
 
+@bot.command(name='wetter')
+async def weather_api(ctx):
+    """
+    This function sends the current weather in a given city when the 'wetter' command is used.
+    """
+    await ctx.message.delete()
+    logging.info(f"Received weather request from {ctx.author.name}")
+    lat = "52.4429081"
+    lon = "13.4424778"
+    # Coordinates for Annedore-Leber-Berufsbildungswerk/Berlin-Gropiusstadt
+    logging.info(f"Requesting weather data for {lat}, {lon}")
+    base_url = "https://api.openweathermap.org/data/2.5/weather?"
+    complete_url = f"{base_url}&lat={lat}&lon={lon}&appid={OPENWEATHERMAP_API_KEY}&units=metric&lang=de"
+
+    logging.info(f"Received response from OpenWeatherMap API")
+    response = requests.get(complete_url)
+    weather_data = response.json()
+
+    logging.debug(f"Response: {weather_data}")
+    logging.info(f"Sending weather data to {ctx.author.name}")
+
+    if weather_data["cod"] != "404":
+        main = weather_data["main"]
+        weather = weather_data["weather"]
+        temperature = main["temp"]
+        feels_like = main["feels_like"]
+        description = weather[0]["description"]
+
+        await ctx.send(f"Die aktuelle Temperatur beträgt {temperature}°C. Es fühlt sich an wie {feels_like}°C. "
+                       f"Die Wetterbeschreibung lautet: {description}.")
+    else:
+        await ctx.send("Etwas ist schiefgelaufen.")
+
 
 @bot.event
 async def on_ready():
@@ -201,7 +234,6 @@ async def on_message(message):
     """
     The event function 'on_message' responds to every message received on the Discord server the bot has access to.
     Initially, every message along with details about the author and the channel is logged in the console.
-    If the message exactly matches "essen", the bot responds in the same channel.
     """
     await bot.process_commands(message)
     # Log the message in the console
@@ -214,7 +246,7 @@ async def check_new_mails():
     This function checks for new emails every 1440 minutes (24 hours). If there are new emails, it sends a message to
     a specific channel with the number of vegan meals for the next week and a preview image for the weeks +1, +2, and +3.
     """
-    current_kw = datetime.date.today().isocalendar()[1]
+    current_kw = get_current_kw()
 
     # Überprüft die Mails für die nächsten 3 Wochen
     for i in range(1, 4):
@@ -237,9 +269,6 @@ async def check_new_mails():
                     mark_mail_as_processed(file_path)
 
 
-weather_setup(bot)
-
-
 def main():
     """
     The main function of the bot. It checks for new emails and then runs the bot.
@@ -260,7 +289,13 @@ try:
     logging.info("Loading environment variables from .env file")
     load_dotenv()
     DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
+    OPENWEATHERMAP_API_KEY = os.getenv("OPENWEATHERMAP_API_KEY")
 
+    if OPENWEATHERMAP_API_KEY is None:
+        raise ValueError("OPENWEATHERMAP_API_KEY is not set")
+    else:
+        logging.info("OPENWEATHERMAP_API_KEY is set")
+        logging.info("Setting up weather command")
     # Check if the Discord token is set
     if DISCORD_TOKEN is None:
         raise ValueError("DISCORD_TOKEN is not set")
