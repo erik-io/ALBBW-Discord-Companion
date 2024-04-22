@@ -99,9 +99,10 @@ async def essen(ctx):
     logging.debug("Getting current date and week number")
     # always-up-to-date when the command is called
     logging.debug(f"Current week number: {get_current_kw()}")
+    file_path = f"vorschau_KW_{get_current_kw()}.png"
     if not mail_already_processed(f"WG: Speisenplan KW {current_kw}"):
         check_mail_current_week()
-        file_path = f"vorschau_KW_{get_current_kw()}.png"
+    else:
         if os.path.exists(file_path):
             if vegan_meals(get_current_kw()) == 0:
                 file = discord.File(file_path)
@@ -117,6 +118,7 @@ async def essen(ctx):
                 else:
                     file = discord.File(file_path)
                     await ctx.send(f"Hier ist die Vorschau:", file=file)
+            mark_mail_as_processed(f"WG: Speisenplan KW {current_kw}")
         else:
             await ctx.send("Es gibt keine Vorschau für diese Woche.")
 
@@ -216,20 +218,21 @@ async def check_new_mails():
 
     # Überprüft die Mails für die nächsten 3 Wochen
     for i in range(1, 4):
-        if not mail_already_processed(f"WG: Speisenplan KW {current_kw + i}"):
-            if check_mail_for_week(current_kw + i):
-                file_path = f"vorschau_KW_{current_kw + i}.png"
-                if os.path.exists(file_path):
-                    channel = bot.get_channel(1160946863797719160)  # Ersetzen Sie dies durch Ihre tatsächliche Kanal-ID
-                    num_vegan_meals = vegan_meals(current_kw + i)
-                    if num_vegan_meals > 0:
-                        file = discord.File(file_path)
-                        await channel.send(
-                            f"In KW {current_kw + i} gibt es {num_vegan_meals} vegane Mahlzeiten.\nHier ist die Vorschau:",
-                            file=file)
-                        mark_mail_as_processed(file_path)
-                    else:
-                        await channel.send(f"In KW {current_kw + i} gibt es keine veganen Mahlzeiten.")
+        if check_mail_for_week(current_kw + i):
+            file_path = f"vorschau_KW_{current_kw + i}.png"
+            if os.path.exists(file_path):
+                channel = bot.get_channel(1160946863797719160)  # Ersetzen Sie dies durch Ihre tatsächliche Kanal-ID
+                num_vegan_meals = vegan_meals(current_kw + i)
+                if num_vegan_meals > 0:
+                    file = discord.File(file_path)
+                    await channel.send(
+                        f"In KW {current_kw + i} gibt es {num_vegan_meals} vegane Mahlzeiten.\nHier ist die Vorschau:",
+                        file=file)
+                    mark_mail_as_processed(file_path)
+                else:
+                    await channel.send(f"In KW {current_kw + i} gibt es keine veganen Mahlzeiten.")
+                    mark_mail_as_processed(file_path)
+
 
 weather_setup(bot)
 
