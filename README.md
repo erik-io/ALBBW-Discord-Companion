@@ -39,6 +39,6 @@ Bei den Features haben wir auf das Projekt bezogen. Die Funktionen sind:
 
 ## Authors
 
-- [Ph4nt0mDev](https://www.github.com/Ph4nt0mDev)
+- [erik-io](https://www.github.com/erik-io)
 - [Mainsys](https://github.com/mainsys-git/)
 
