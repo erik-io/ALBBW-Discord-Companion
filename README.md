@@ -27,7 +27,7 @@ Um eigene Commands hinzuzufügen könnt ihr entweder selbst welche entwickeln (d
 Bei den Features haben wir auf das Projekt bezogen. Die Funktionen sind: 
 - !befehle: Sendet eine Liste verfügbarer Befehle.
 - !vorschlag: Ermöglicht Nutzern, Vorschläge für neue Bot-Funktionen einzureichen. Diese werden an die Admins gesendet.
-- !bclear und !clear: Löschen Nachrichten im Chat. Die Nutzung ist auf bestimmte Nutzer beschränkt.(Admin IDs müssen gesetzt werden. Wir übernehmen das bei Anfrage)
+- !bclear und !clear: Löschen Nachrichten im Chat. Die Nutzung ist auf bestimmte Nutzer beschränkt.(Admin IDs müssen gesetzt werden.)
 - !info: Sendet Informationen zur Cafeteria.
 - !essen: Teilt den aktuellen Speiseplan mit, inklusive einer Angabe zu veganen Mahlzeiten.
 - !vegan: Informiert über die Anzahl veganer Mahlzeiten in der aktuellen Woche.
